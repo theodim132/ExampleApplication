@@ -8,11 +8,11 @@ namespace ExampleApplication.Models
     {
         [Key]
         public int Id { get; set; }
-        public Name Name { get; set; }
+        public string Name { get; set; }
 
-        public List<string> Capital { get; set; }
+        public string Capital { get; set; }
 
-        public List<string> Borders { get; set; }
+        public List<Border> Borders { get; set; }
 
     }
 

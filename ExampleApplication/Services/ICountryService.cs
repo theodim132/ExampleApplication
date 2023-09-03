@@ -6,7 +6,8 @@ namespace ExampleApplication.Services
     public interface ICountryService
     {
         Task<ResponseDto?> GetAllCountriesAsync();
-        Task<List<Country>?> GetAllCountriesFromDbAsync();
+        Task<List<CountryDto>?> GetAllCountriesFromDbAsync();
         void PostCountries(List<CountryDto> countries);
+        Task<ResponseDto?> DeleteCountries();
     }
 }

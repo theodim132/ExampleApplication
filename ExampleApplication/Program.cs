@@ -24,7 +24,7 @@ builder.Services.AddHttpClient();
 Constants.CountryAPI = builder.Configuration["APIUrls:CountryAPI"];
 
 
-
+builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ICountryService, CountryService>();

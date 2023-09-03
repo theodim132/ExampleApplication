@@ -3,7 +3,9 @@ using ExampleApplication.Models;
 using ExampleApplication.Models.Dto;
 using ExampleApplication.Utility;
 using Microservices.Services.HotelRoomAPI.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Reflection.Metadata;
 
 namespace ExampleApplication.Services
@@ -13,13 +15,39 @@ namespace ExampleApplication.Services
         private readonly IHttpService _httpService;
         private readonly ConfigurationBuilder _configurationBuilder;
         private readonly IMapper _mapper;
-        private readonly AppDbContext _appDbContext;
+        private readonly AppDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public CountryService(AppDbContext appDbContext,IHttpService httpService,IMapper mapper)
+        public CountryService(AppDbContext appDbContext,IHttpService httpService,IMapper mapper,IMemoryCache memoryCache)
         {
-            _appDbContext = appDbContext;
+            _context = appDbContext;
             _httpService = httpService;
             _mapper = mapper;
+            _cache = memoryCache;
+        }
+
+        public async Task<ResponseDto?> DeleteCountries()
+        {
+            try
+            {
+                var countriesFromDb = await _context.Countries.ToListAsync();
+                if (countriesFromDb is not null) 
+                {
+                    _context.Countries.RemoveRange(countriesFromDb);
+                   await _context.SaveChangesAsync();
+                    _cache.Remove("Countries");
+                    return new ResponseDto { Message = "All countries Delete", IsSuccess = true };
+                }
+                return new ResponseDto { Message = "Could not delete countries", IsSuccess = false };
+
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }
+
+
+           
         }
 
         public async Task<ResponseDto?> GetAllCountriesAsync()
@@ -32,17 +60,47 @@ namespace ExampleApplication.Services
             return response;
         }
 
-        public async Task<List<Country>?> GetAllCountriesFromDbAsync()
+        public async Task<List<CountryDto>?> GetAllCountriesFromDbAsync()
         {
-            var query = _appDbContext.Countries;
-            return await query.ToListAsync();
+            var query = _context.Countries.Include(u=>u.Borders);
+            var countriesFromDb = _mapper.Map<List<CountryDto>>(await query.ToListAsync());
+            _cache.Set("Countries", countriesFromDb);
+            return  countriesFromDb;
         }
 
         public void PostCountries(List<CountryDto> countries)
         {
-           var list  = _mapper.Map<List<Country>>(countries);
-            _appDbContext.AddAsync(list);
-            _appDbContext.SaveChangesAsync();
+            try
+            {
+
+                var countryEntities = countries.Select(dto => new Country
+                {
+                    Name = dto.Name.Common,  
+                    Capital = dto.Capital.FirstOrDefault(), 
+                }).ToList();
+
+                _context.Countries.AddRange(countryEntities);
+                _context.SaveChanges();
+
+                for (int i = 0; i < countryEntities.Count; i++)
+                {
+                    var country = countryEntities[i];
+                    var countryDto = countries[i];
+                    var borders = countryDto.Borders.Select(border => new Border
+                    {
+                        Name = border,
+                        CountryId = country.Id 
+                    }).ToList();
+
+                    _context.Borders.AddRange(borders);
+                }
+                _context.SaveChanges();
+                _cache.Set("Countries", countries);
+            }
+            catch (Exception ex) 
+            {
+                throw ex; 
+            }
         }
     }
 }
