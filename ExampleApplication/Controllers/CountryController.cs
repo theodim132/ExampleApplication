@@ -18,62 +18,100 @@ namespace ExampleApplication.Controllers
         private readonly ICountryService _countryService;
         private readonly AppDbContext _appDbContext;
         private readonly IMemoryCache _cache;
-        private readonly IMapper _mapper;
+        private readonly ResponseDto _response;
 
         public CountryController(ICountryService countryService,AppDbContext appDbContext,IMemoryCache memoryCache,IMapper mapper)
         {
             _countryService = countryService;
             _appDbContext = appDbContext;
             _cache = memoryCache;
-            _mapper = mapper;
+             _response = new ResponseDto();
         }
 
         [HttpGet]
         [Route("GetAllFromAPI")]
-        public async Task<IActionResult> GetAllFromAPI()
+        public async Task<ResponseDto> GetAllFromAPI()
         {
-            if (_cache.TryGetValue("Countries", out List<CountryDto> cachedCountries))
+            try
             {
-                return new JsonResult(new { message = cachedCountries });
-            }
-
-            List<CountryDto?> countriesFromDb = await _countryService.GetAllCountriesFromDbAsync();
-
-            if(countriesFromDb is not null && countriesFromDb.Any()) return new JsonResult(new { message = countriesFromDb });
-
-            List<CountryDto> list = new();
-            ResponseDto? response = await _countryService.GetAllCountriesAsync();
-            if (response is not null && response.IsSuccess)
-            {
-                if (response.Result is not null)
+                //get cached countries if any
+                if (_cache.TryGetValue("Countries", out List<CountryDto> cachedCountries))
                 {
-                    string jsonResult = response.Result.ToString();
-                    list = JsonConvert.DeserializeObject<List<CountryDto>>(jsonResult);
-                    if(list is not null) _countryService.PostCountries(list);
+                    _response.Result = cachedCountries;
+                    _response.Message = "Countries from cached data";
+                    _response.IsSuccess = true;
+                    return _response;
+                }
+                //get countries from db if any
+                List<CountryDto?> countriesFromDb = await _countryService.GetAllCountriesFromDbAsync();
+                if (countriesFromDb is not null && countriesFromDb.Any()) 
+                {
+                    _response.Result = countriesFromDb;
+                    _response.Message = "Countries from db";
+                    _response.IsSuccess = true;
+                    return _response;
+                }
+
+                List<CountryDto> list = new();
+                //get countries from the API
+                ResponseDto? response = await _countryService.GetAllCountriesAsync();
+                if (response is not null && response.IsSuccess)
+                {
+                    if (response.Result is not null)
+                    {
+                        string jsonResult = response.Result.ToString();
+                        if (jsonResult is not null)
+                        {
+                            list = JsonConvert.DeserializeObject<List<CountryDto>>(jsonResult);
+                            _response.Result = list;
+                            _response.Message = "Results from CountriesApi";
+                            _response.IsSuccess = true;
+                        }
+                        
+                       if (list is not null) _countryService.PostCountries(list);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return new JsonResult(new { message = response?.Message });
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return new JsonResult(new { message = list });
+            return _response;
         }
 
 
         [HttpGet]
         [Route("GetAllFromDb")]
-        public async Task<IActionResult> GetAllFromDb() 
+        public async Task<ResponseDto?> GetAllFromDb() 
         {
-            var list = await _countryService.GetAllCountriesFromDbAsync();
-            //var k = _mapper.Map<List<CountryDto>?>(list); 
-            return new JsonResult(list);
+            try
+            {
+                var list = await _countryService.GetAllCountriesFromDbAsync();
+                _response.Result = list;
+            }catch (Exception ex) 
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
         [HttpDelete]
         [Route("DeleteAllFromDb")]
-        public async Task<IActionResult> DeleteAllFromDb()
+        public async Task<ResponseDto?> DeleteAllFromDb()
         {
-            var list = await _countryService.DeleteCountries();
-            return new JsonResult(list);
+            try
+            {
+                var response = await _countryService.DeleteCountries();
+                _response.Message = response.Message;
+                _response.IsSuccess = response.IsSuccess;
+            }
+            catch (Exception ex) 
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
 
     }

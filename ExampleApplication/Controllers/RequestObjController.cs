@@ -1,22 +1,44 @@
 ﻿using ExampleApplication.Models;
+using ExampleApplication.Models.Dto;
 using ExampleApplication.Utility;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleApplication.Controllers
 {
+
     [ApiController]
     [Route("api/requestObj")]
     public class RequestObjController : ControllerBase
     {
+        private readonly ResponseDto _response;
+
+        public RequestObjController()
+        {
+            _response = new ResponseDto();
+        }
 
         [HttpPost("FindSecondLargest")]
-        public  ActionResult<int> FindSecondLargest([FromBody] RequestObj request)
+        public ResponseDto? FindSecondLargest([FromBody] RequestObj request)
         {
-            if(request is null) return BadRequest(string.Empty);
-
-            var secondLargestNumber = Helper.FindSecondLargest(request.RequestArrayObj);
-
-            return Ok(secondLargestNumber);
+            try
+            {
+                if (request is null || !request.RequestArrayObj.Any())
+                {
+                    _response.Message = "array was empty";
+                }
+                else 
+                {
+                        var secondLargestNumber = Helper.FindSecondLargest(request.RequestArrayObj);
+                        _response.Result = secondLargestNumber;
+                        _response.IsSuccess = true;
+                };
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
         }
     }
 }

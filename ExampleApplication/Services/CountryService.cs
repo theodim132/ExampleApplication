@@ -31,23 +31,20 @@ namespace ExampleApplication.Services
             try
             {
                 var countriesFromDb = await _context.Countries.ToListAsync();
-                if (countriesFromDb is not null) 
+                if (countriesFromDb?.Any() == true) 
                 {
                     _context.Countries.RemoveRange(countriesFromDb);
                    await _context.SaveChangesAsync();
                     _cache.Remove("Countries");
-                    return new ResponseDto { Message = "All countries Delete", IsSuccess = true };
+                    return new ResponseDto { Message = "All countries have been deleted", IsSuccess = true };
                 }
-                return new ResponseDto { Message = "Could not delete countries", IsSuccess = false };
+                return new ResponseDto { Message = "Could not find countries to delete", IsSuccess = false };
 
             }
             catch (Exception ex) 
             {
-                throw ex;
+                throw ;
             }
-
-
-           
         }
 
         public async Task<ResponseDto?> GetAllCountriesAsync()
@@ -62,17 +59,23 @@ namespace ExampleApplication.Services
 
         public async Task<List<CountryDto>?> GetAllCountriesFromDbAsync()
         {
-            var query = _context.Countries.Include(u=>u.Borders);
-            var countriesFromDb = _mapper.Map<List<CountryDto>>(await query.ToListAsync());
-            _cache.Set("Countries", countriesFromDb);
-            return  countriesFromDb;
+            try
+            {
+                var query = _context.Countries.Include(u => u.Borders);
+                var countriesFromDb = _mapper.Map<List<CountryDto>>(await query.ToListAsync());
+                _cache.Set("Countries", countriesFromDb);
+                return countriesFromDb;
+            }
+            catch (Exception ex) 
+            {
+                throw ;
+            }
         }
 
-        public void PostCountries(List<CountryDto> countries)
+        public  void PostCountries(List<CountryDto> countries)
         {
             try
             {
-
                 var countryEntities = countries.Select(dto => new Country
                 {
                     Name = dto.Name.Common,  
@@ -97,9 +100,9 @@ namespace ExampleApplication.Services
                 _context.SaveChanges();
                 _cache.Set("Countries", countries);
             }
-            catch (Exception ex) 
+            catch (Exception) 
             {
-                throw ex; 
+                throw;
             }
         }
     }
