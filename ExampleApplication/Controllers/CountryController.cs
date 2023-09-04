@@ -52,7 +52,7 @@ namespace ExampleApplication.Controllers
                     return _response;
                 }
 
-                List<CountryDto> list = new();
+                List<CountryDto> countries = new();
                 //get countries from the API
                 ResponseDto? response = await _countryService.GetAllCountriesAsync();
                 if (response is not null && response.IsSuccess)
@@ -62,13 +62,13 @@ namespace ExampleApplication.Controllers
                         string jsonResult = response.Result.ToString();
                         if (jsonResult is not null)
                         {
-                            list = JsonConvert.DeserializeObject<List<CountryDto>>(jsonResult);
-                            _response.Result = list;
+                            countries = JsonConvert.DeserializeObject<List<CountryDto>>(jsonResult);
+                            _response.Result = countries;
                             _response.Message = "Results from CountriesApi";
                             _response.IsSuccess = true;
                         }
                         
-                       if (list is not null) _countryService.PostCountries(list);
+                       if (countries is not null) _countryService.PostCountries(countries);
                     }
                 }
             }
@@ -87,8 +87,8 @@ namespace ExampleApplication.Controllers
         {
             try
             {
-                var list = await _countryService.GetAllCountriesFromDbAsync();
-                _response.Result = list;
+                var countries = await _countryService.GetAllCountriesFromDbAsync();
+                _response.Result = countries;
             }catch (Exception ex) 
             {
                 _response.IsSuccess = false;

@@ -35,9 +35,9 @@ namespace ExampleApplication.Services
                 {
                     _context.Countries.RemoveRange(countriesFromDb);
                    await _context.SaveChangesAsync();
-                    _cache.Remove("Countries");
                     return new ResponseDto { Message = "All countries have been deleted", IsSuccess = true };
                 }
+                _cache.Remove("Countries");
                 return new ResponseDto { Message = "Could not find countries to delete", IsSuccess = false };
 
             }
