@@ -1,15 +1,15 @@
 using AutoMapper;
 using ExampleApplication.Services;
 using ExampleApplication.Utility;
-using Microservices.Services.HotelRoomAPI;
-using Microservices.Services.HotelRoomAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using ExampleApplication.Data;
+using ExampleApplication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<AppDbContext>(option =>
+builder.Services.AddDbContext<DbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });

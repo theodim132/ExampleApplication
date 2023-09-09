@@ -2,7 +2,7 @@
 using ExampleApplication.Models;
 using ExampleApplication.Models.Dto;
 
-namespace Microservices.Services.HotelRoomAPI
+namespace ExampleApplication
 {
     public class MappingConfig
     {

@@ -2,7 +2,7 @@
 using ExampleApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Microservices.Services.HotelRoomAPI.Data
+namespace ExampleApplication.Data
 {
     public class AppDbContext : DbContext
     {
