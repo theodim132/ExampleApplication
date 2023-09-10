@@ -8,6 +8,6 @@ namespace ExampleApplication.Services
         Task<ResponseDto?> GetAllCountriesAsync();
         Task<List<CountryDto>?> GetAllCountriesFromDbAsync();
         void PostCountries(List<CountryDto> countries);
-        Task<ResponseDto?> DeleteCountries();
+        Task<ResponseDto?> DeleteCountriesAsync();
     }
 }

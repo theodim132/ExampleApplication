@@ -2,14 +2,15 @@ using AutoMapper;
 using ExampleApplication.Services;
 using ExampleApplication.Utility;
 using Microsoft.EntityFrameworkCore;
-using ExampleApplication.Data;
 using ExampleApplication;
+using ExampleApplication.Repository;
+using ExampleApplication.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<DbContext>(option =>
+builder.Services.AddDbContext<AppDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -28,6 +29,7 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 
 
 builder.Services.AddControllers();

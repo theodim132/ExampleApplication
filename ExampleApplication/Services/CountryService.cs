@@ -6,7 +6,8 @@ using ExampleApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using System.Reflection.Metadata;
+using ExampleApplication.Repository;
+using ExampleApplication.Data;
 
 namespace ExampleApplication.Services
 {
@@ -28,26 +29,27 @@ namespace ExampleApplication.Services
             _countryRepo = countryRepository;
         }
 
-        public async Task<ResponseDto?> DeleteCountries()
+        public async Task<ResponseDto> DeleteCountriesAsync()
         {
             try
             {
-                var countriesFromDb = await _context.Countries.ToListAsync();
-                if (countriesFromDb?.Any() == true) 
+                var result = await _countryRepo.DeleteAllAsync();
+                if (result.IsSuccess)
                 {
-                    _context.Countries.RemoveRange(countriesFromDb);
-                   await _context.SaveChangesAsync();
-                    return new ResponseDto { Message = "All countries have been deleted", IsSuccess = true };
+                    _cache.Remove("Countries");
+                    return new ResponseDto { Message = "Countries Deleted", IsSuccess = true };
                 }
-                _cache.Remove("Countries");
-                return new ResponseDto { Message = "Could not find countries to delete", IsSuccess = false };
-
+                else
+                {
+                    return new ResponseDto { Message = result.Message, IsSuccess = false };
+                }
             }
             catch (Exception ex)
             {
-                throw ;
+                return new ResponseDto { Message = "An error occurred while deleting countries.", IsSuccess = false };
             }
         }
+
 
         public async Task<ResponseDto?> GetAllCountriesAsync()
         {

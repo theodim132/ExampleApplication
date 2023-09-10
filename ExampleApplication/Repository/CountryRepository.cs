@@ -2,9 +2,8 @@
 using ExampleApplication.Models;
 using ExampleApplication.Models.Dto;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
-namespace ExampleApplication.Services
+namespace ExampleApplication.Repository
 {
     public class CountryRepository : ICountryRepository
     {
@@ -32,8 +31,9 @@ namespace ExampleApplication.Services
             }
         }
 
-        public async Task DeleteAll()
+        public async Task<ResponseDto> DeleteAllAsync()
         {
+            var result = new ResponseDto { IsSuccess = false };
             try
             {
                 IQueryable<Country> queryableCountries = _appDbContext.Countries;
@@ -41,15 +41,22 @@ namespace ExampleApplication.Services
                 if (countries.Any())
                 {
                     _appDbContext.RemoveRange(countries);
+                    await _appDbContext.SaveChangesAsync();
+                    result.IsSuccess = true;
+                }
+                else
+                {
+                    result.Message = "No countries to delete.";
                 }
             }
             catch (Exception ex)
             {
-
+                result.Message = $"An error occurred: {ex.Message}";
             }
-
+            return result;
         }
-        public  IQueryable<Country> GetAll()
+
+        public IQueryable<Country> GetAll()
         {
             try
             {
@@ -58,7 +65,7 @@ namespace ExampleApplication.Services
             }
             catch (Exception ex)
             {
-                
+
             }
             return null;
         }

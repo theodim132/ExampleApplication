@@ -1,8 +1,8 @@
 using AutoMapper;
+using ExampleApplication.Data;
 using ExampleApplication.Models;
 using ExampleApplication.Models.Dto;
 using ExampleApplication.Services;
-using Microservices.Services.HotelRoomAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -102,7 +102,7 @@ namespace ExampleApplication.Controllers
         {
             try
             {
-                var response = await _countryService.DeleteCountries();
+                var response = await _countryService.DeleteCountriesAsync();
                 _response.Message = response.Message;
                 _response.IsSuccess = response.IsSuccess;
             }
