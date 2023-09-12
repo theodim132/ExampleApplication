@@ -7,7 +7,7 @@ namespace ExampleApplication.Repository
     {
         Task Delete(int? id);
         Task<ResponseDto> DeleteAllAsync();
-        IQueryable<Country> GetAll();
-        Task PostCountries(List<CountryDto?> countries);
+        Task<List<Country>> GetAll();
+        Task<ResponseDto> PostCountries(List<CountryDto> countries);
     }
 }

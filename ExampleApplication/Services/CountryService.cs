@@ -17,16 +17,19 @@ namespace ExampleApplication.Services
         private readonly ConfigurationBuilder _configurationBuilder;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
-        private readonly IMemoryCache _cache;
         private readonly ICountryRepository _countryRepo;
-        
+        private readonly ResponseDto _responseDto;
+        private readonly ICacheService _cacheService;
 
-        public CountryService(AppDbContext appDbContext, IHttpService httpService, IMapper mapper,ICountryRepository countryRepository)
+
+        public CountryService(AppDbContext appDbContext, IHttpService httpService, IMapper mapper,ICountryRepository countryRepository, ICacheService cacheService)
         {
             _context = appDbContext;
             _httpService = httpService;
             _mapper = mapper;
             _countryRepo = countryRepository;
+            _responseDto = new ResponseDto();
+            _cacheService = cacheService;
         }
 
         public async Task<ResponseDto> DeleteCountriesAsync()
@@ -36,7 +39,7 @@ namespace ExampleApplication.Services
                 var result = await _countryRepo.DeleteAllAsync();
                 if (result.IsSuccess)
                 {
-                    _cache.Remove("Countries");
+                    _cacheService.Delete<Country>("Countries");
                     return new ResponseDto { Message = "Countries Deleted", IsSuccess = true };
                 }
                 else
@@ -51,7 +54,7 @@ namespace ExampleApplication.Services
         }
 
 
-        public async Task<ResponseDto?> GetAllCountriesAsync()
+        public async Task<ResponseDto> GetAllCountriesAsync()
         {
             var response = await _httpService.SendAsync(new RequestDto()
             {
@@ -61,53 +64,55 @@ namespace ExampleApplication.Services
             return response;
         }
 
-        public async Task<List<CountryDto>?> GetAllCountriesFromDbAsync()
+        public async Task<ResponseDto> GetAllCountriesFromDbAsync()
         {
             try
             {
-                var query = _context.Countries.Include(u => u.Borders);
-                var countriesFromDb = _mapper.Map<List<CountryDto>>(await query.ToListAsync());
-                _cache.Set("Countries", countriesFromDb);
-                return countriesFromDb;
+                var query = await _countryRepo.GetAll();
+                var countriesFromDb = _mapper.Map<List<CountryDto>>(query);
+                if (query.Any())
+                {
+                    _responseDto.Result = countriesFromDb;
+                    _responseDto.Message = "Countries From db";
+                    TimeSpan timeSpan = TimeSpan.FromSeconds(1);
+                    _cacheService.SetItem<List<Country>>("Countries", query, timeSpan);
+                }
+                else
+                {
+                 _responseDto.IsSuccess = false;
+                }
             }
             catch (Exception ex) 
             {
-                throw ;
+                _responseDto.Message += ex.Message;
+                _responseDto.IsSuccess = false;
             }
+            return _responseDto;
         }
 
-        public  void PostCountries(List<CountryDto> countries)
+        public  async Task<ResponseDto> PostCountries(List<CountryDto> countries)
         {
             try
             {
-                var countryEntities = countries.Select(dto => new Country
+                if (countries.Any())
                 {
-                    Name = dto.Name.Common,
-                    Capital = dto.Capital.FirstOrDefault(),
-                }).ToList();
-
-                _context.Countries.AddRange(countryEntities);
-                _context.SaveChanges();
-
-                for (int i = 0; i < countryEntities.Count; i++)
-                {
-                    var country = countryEntities[i];
-                    var countryDto = countries[i];
-                    var borders = countryDto.Borders.Select(border => new Border
-                    {
-                        Name = border,
-                        CountryId = country.Id
-                    }).ToList();
-
-                    _context.Borders.AddRange(borders);
+                    var result = await _countryRepo.PostCountries(countries);
+                    _responseDto.IsSuccess = result.IsSuccess;
+                    _responseDto.Message = result.Message;
                 }
-                _context.SaveChanges();
-                _cache.Set("Countries", countries);
+                else 
+                {
+                    _responseDto.IsSuccess = false;
+                    _responseDto.Message = "No countries to post";
+                }
+                
             }
-            catch (Exception) 
+            catch (Exception ex) 
             {
-                throw;
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
             }
+            return _responseDto;
         }
     }
 }

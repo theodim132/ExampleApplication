@@ -8,10 +8,12 @@ namespace ExampleApplication.Repository
     public class CountryRepository : ICountryRepository
     {
         private readonly AppDbContext _appDbContext;
+        private readonly ResponseDto _responseDto;
 
         public CountryRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+            _responseDto = new ResponseDto();
         }
 
         public async Task Delete(int? id)
@@ -33,7 +35,7 @@ namespace ExampleApplication.Repository
 
         public async Task<ResponseDto> DeleteAllAsync()
         {
-            var result = new ResponseDto { IsSuccess = false };
+
             try
             {
                 IQueryable<Country> queryableCountries = _appDbContext.Countries;
@@ -42,26 +44,27 @@ namespace ExampleApplication.Repository
                 {
                     _appDbContext.RemoveRange(countries);
                     await _appDbContext.SaveChangesAsync();
-                    result.IsSuccess = true;
+                    _responseDto.IsSuccess = true;
                 }
                 else
                 {
-                    result.Message = "No countries to delete.";
+                    _responseDto.Message = "No countries to delete.";
                 }
             }
             catch (Exception ex)
             {
-                result.Message = $"An error occurred: {ex.Message}";
+                _responseDto.Message = $"An error occurred: {ex.Message}";
             }
-            return result;
+            return _responseDto;
         }
 
-        public IQueryable<Country> GetAll()
+        public async Task<List<Country>> GetAll()
         {
             try
             {
-                IQueryable<Country> queryableCountries = _appDbContext.Countries;
-                return queryableCountries;
+                IQueryable<Country> queryableCountries = _appDbContext.Countries.Include(u => u.Borders);
+                var countries = await queryableCountries.ToListAsync();
+                return countries;
             }
             catch (Exception ex)
             {
@@ -70,9 +73,42 @@ namespace ExampleApplication.Repository
             return null;
         }
 
-        public Task PostCountries(List<CountryDto?> countries)
+        public async Task<ResponseDto> PostCountries(List<CountryDto> countries)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var countryEntities = countries.Select(dto => new Country
+                {
+                    Name = dto.Name.Common,
+                    Capital = dto.Capital.FirstOrDefault(),
+                }).ToList();
+
+                await _appDbContext.Countries.AddRangeAsync(countryEntities);
+                await _appDbContext.SaveChangesAsync();
+
+                for (int i = 0; i < countryEntities.Count; i++)
+                {
+                    var country = countryEntities[i];
+                    var countryDto = countries[i];
+                    var borders = countryDto?.Borders.Select(border => new Border
+                    {
+                        Name = border,
+                        CountryId = country.Id
+                    }).ToList();
+
+                    if (borders?.Any() is not null) await _appDbContext.Borders.AddRangeAsync(borders);
+
+                }
+                await _appDbContext.SaveChangesAsync();
+                _responseDto.IsSuccess = true;
+                _responseDto.Message = "Countries Saved";
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = "Countries didn't saved " + ex.Message;
+                _responseDto.IsSuccess = false;
+            }
+            return _responseDto;
         }
     }
 }

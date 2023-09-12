@@ -43,10 +43,10 @@ namespace ExampleApplication.Controllers
                     return _response;
                 }
                 //get countries from db if any
-                List<CountryDto?> countriesFromDb = await _countryService.GetAllCountriesFromDbAsync();
-                if (countriesFromDb is not null && countriesFromDb.Any()) 
+                ResponseDto responseFromDb = await _countryService.GetAllCountriesFromDbAsync();
+                if (responseFromDb.IsSuccess == true) 
                 {
-                    _response.Result = countriesFromDb;
+                    _response.Result = responseFromDb.Result;
                     _response.Message = "Countries from db";
                     _response.IsSuccess = true;
                     return _response;

@@ -29,6 +29,7 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 
 
