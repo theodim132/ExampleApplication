@@ -17,10 +17,10 @@ namespace ExampleApplication.Controllers
     {
         private readonly ICountryService _countryService;
         private readonly AppDbContext _appDbContext;
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cache;
         private readonly ResponseDto _response;
 
-        public CountryController(ICountryService countryService,AppDbContext appDbContext,IMemoryCache memoryCache,IMapper mapper)
+        public CountryController(ICountryService countryService,AppDbContext appDbContext, ICacheService memoryCache,IMapper mapper)
         {
             _countryService = countryService;
             _appDbContext = appDbContext;
@@ -35,7 +35,8 @@ namespace ExampleApplication.Controllers
             try
             {
                 //get cached countries if any
-                if (_cache.TryGetValue("Countries", out List<CountryDto> cachedCountries))
+                var cachedCountries = _cache.Get<List<CountryDto>>("Countries");
+                if (cachedCountries?.Count() > 0)
                 {
                     _response.Result = cachedCountries;
                     _response.Message = "Countries from cached data";
@@ -46,10 +47,21 @@ namespace ExampleApplication.Controllers
                 ResponseDto responseFromDb = await _countryService.GetAllCountriesFromDbAsync();
                 if (responseFromDb.IsSuccess == true) 
                 {
-                    _response.Result = responseFromDb.Result;
-                    _response.Message = "Countries from db";
-                    _response.IsSuccess = true;
-                    return _response;
+                    if (responseFromDb.Result is List<CountryDto> countriesFromDb)
+                    {
+                        _response.Result = countriesFromDb;
+                        _response.Message = "Countries from db";
+                        _response.IsSuccess = true;
+
+                        _cache.SetItem("Countries", countriesFromDb, TimeSpan.FromSeconds(10));
+                        return _response;
+                    }
+                    else
+                    {
+                        _response.IsSuccess = false;
+                        _response.Message = "Unexpected type received";
+                        return _response;
+                    }
                 }
 
                 List<CountryDto> countries = new();

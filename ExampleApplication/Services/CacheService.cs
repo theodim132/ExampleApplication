@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using ExampleApplication.Models.Dto;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ExampleApplication.Services
 {
@@ -25,6 +26,7 @@ namespace ExampleApplication.Services
             }
             return default;
         }
+
 
         public void SetItem<T>(string key, T item, TimeSpan? expiration = null)
         {
