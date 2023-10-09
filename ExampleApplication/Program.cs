@@ -1,9 +1,9 @@
 using AutoMapper;
+using Example.App;
+using Example.App.Utility;
 using ExampleApplication.Utility;
 using Microsoft.EntityFrameworkCore;
-using MyApp.Constants;
 using MyApp.DataAccess.Abstractions.CacheService;
-using MyApp.DataAccess.Abstractions.HttpService;
 using MyApp.DataAccess.CacheServices;
 using MyApp.DataAccess.Databases.MyDomain;
 using MyApp.DataAccess.HttpServices;
@@ -12,6 +12,9 @@ using MyApp.Domain.MyDomain.Repositories;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services;
 using MyApp.Domain.MyDomain.Services.Abstractions;
+using Viva.Diagnostics;
+using Viva.Enterprise.Extensions.Serialization;
+using Viva.Enterprise.Extensions.Serialization.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,15 +29,14 @@ IMapper mapper = CountryMapperProfile.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
+builder.Services.AddCountryApiService(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-Api.CountryAPI = builder.Configuration["APIUrls:CountryAPI"];
-
 
 builder.Services.AddMemoryCache();
 
-builder.Services.AddScoped<IHttpService, HttpService>();
+builder.Services.AddSingleton<IEventLogService, EventLogService>();
+builder.Services.AddTransient<ICamelCaseJsonSerializationService, CamelCaseJsonSerializationService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();

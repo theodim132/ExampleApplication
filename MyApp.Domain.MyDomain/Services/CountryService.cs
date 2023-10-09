@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using MyApp.Constants;
 using MyApp.DataAccess.Abstractions.CacheService;
+using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.DataAccess.Abstractions.Dto;
-using MyApp.DataAccess.Abstractions.HttpService;
 using MyApp.Domain.MyDomain.Model;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
@@ -12,17 +11,16 @@ namespace MyApp.Domain.MyDomain.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly IHttpService _httpService;
-        private readonly ConfigurationBuilder _configurationBuilder;
+        private readonly ICountryApiService countryApi;
         private readonly IMapper _mapper;
         private readonly ICountryRepository _countryRepo;
         private readonly ResponseDto _responseDto;
         private readonly ICacheService _cacheService;
 
 
-        public CountryService(IHttpService httpService, IMapper mapper,ICountryRepository countryRepository, ICacheService cacheService)
+        public CountryService(ICountryApiService httpService, IMapper mapper,ICountryRepository countryRepository, ICacheService cacheService)
         {
-            _httpService = httpService;
+            countryApi = httpService;
             _mapper = mapper;
             _countryRepo = countryRepository;
             _responseDto = new ResponseDto();
@@ -53,11 +51,23 @@ namespace MyApp.Domain.MyDomain.Services
 
         public async Task<ResponseDto> GetAllCountriesAsync()
         {
-            var response = await _httpService.SendAsync(new RequestDto()
+            // Get Countries from cache
+
+            // Get Countries From DB
+            // Store in Cache
+            // return
+
+            // Get Countries from API
+            // Store In Db
+            // return
+
+            await countryApi.GetCountriesAsync(new List<string>
             {
-                ApiType = "GET",
-                Url = Api.CountryAPI + "independent?fields=name,capital,borders"
+                "name",
+                "capital",
+                "borders"
             });
+
             return response;
         }
 
