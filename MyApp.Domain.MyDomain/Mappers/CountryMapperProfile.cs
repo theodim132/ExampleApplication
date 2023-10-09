@@ -1,62 +1,56 @@
-﻿using AutoMapper;
-using MyApp.Domain.MyDomain.Dto;
-using MyApp.Domain.MyDomain.Model;
+﻿using MyApp.DataAccess.Abstractions.CountryApi;
+using MyApp.DataAccess.Abstractions.MyDomain.Entities;
 
 namespace MyApp.Domain.MyDomain.Mappers
 {
-    public class CountryMapperProfile : Profile
+    public static class CountryMapperProfile
     {
-
-        public static MapperConfiguration RegisterMaps()
+        public static List<CountryContract> ToCountryContracts(this List<Country> countries)
         {
-            var mappingConfig = new MapperConfiguration(config =>
+            return countries.Select(country => country.ToCountryContract()).ToList();
+        }
+
+        public static CountryContract ToCountryContract(this Country country)
+        {
+            return new CountryContract
             {
-                //config.CreateMap<Country, CountryDto>()
-                //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => new NameDto { Common = src.Name }))
-                //    .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => new List<string> { src.Capital }
-                //   ));
-
-                //config.CreateMap<CountryDto, Country>()
-                //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Common))
-                //    .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital.FirstOrDefault()));
-
-                //config.CreateMap<MyApp.DataAccess.Abstractions.MyDomain.Entities.Country, Model.Country>()
-                //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                //    .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital))
-                //    .ForMember(dest => dest.Borders, opt => opt.MapFrom(src => src.Borders.FirstOrDefault().Name));
-
-                //config.CreateMap<MyApp.Domain.MyDomain.Model.Name, Model.Name>()
-                //    .ForMember(dest => dest.common, opt => opt.MapFrom(src => src.common));
-
-
-                //config.CreateMap<Model.Country, MyApp.DataAccess.Abstractions.MyDomain.Entities.Country>()
-                //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                //    .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital))
-                //    .ForMember(dest => dest.Borders, opt => opt.MapFrom(src => src.Borders.FirstOrDefault().Name));
-
-                //config.CreateMap<Model.Name, MyApp.DataAccess.Abstractions.MyDomain.Entities.Name>()
-                //    .ForMember(dest => dest.common, opt => opt.MapFrom(src => src.common));
-
-                //config.CreateMap<Country, MyApp.DataAccess.Abstractions.MyDomain.Entities.Country>()
-                //   .ForMember(dest => dest.Name, opt => opt.MapFrom(src => new Name { common = src.Name }))
-                //   .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => new List<string> { src.Capital }
-                //  ));
-
-                //config.CreateMap<MyApp.DataAccess.Abstractions.MyDomain.Entities.Country, Country>()
-                //  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => new Name { common = src.Name }))
-                //  .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => new List<string> { src.Capital }
-                // ));
+                Name = new CountryContract.CountryName
+                {
+                    Common = country.CommonName,
+                    Official = country.OfficialName,
+                    NativeName = country.NativeNameSpaCommon == null && country.NativeNameSpaOfficial == null
+                        ? new CountryContract.NativeName()
+                        : new CountryContract.NativeName
+                        {
+                            Spa = new CountryContract.NativeName.NativeNameSpa
+                            {
+                                Common = country.NativeNameSpaCommon ?? "",
+                                Official = country.NativeNameSpaOfficial ?? ""
+                            }
+                        }
+                },
+                Capital = string.IsNullOrEmpty(country.Capital) ? new List<string>() : new List<string> { country.Capital },
+                Borders = country.Borders?.Select(b => b.Name).ToList() ?? new List<string>()
+            };
+        }
 
 
-                //config.CreateMap<Border, MyApp.DataAccess.Abstractions.MyDomain.Entities.Border>().ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+        public static Country ToCountryEntity(this CountryContract contract)
+        {
+            return new Country
+            {
+                CommonName = contract.Name.Common,
+                OfficialName = contract.Name.Official,
+                NativeNameSpaCommon = contract.Name.NativeName?.Spa?.Common,
+                NativeNameSpaOfficial = contract.Name.NativeName?.Spa?.Official,
+                Capital = contract.Capital.FirstOrDefault() ?? "",
+                Borders = contract.Borders.Select(b => new Border { Name = b }).ToList()
+            };
+        }
 
-                //config.CreateMap<MyApp.DataAccess.Abstractions.MyDomain.Entities.Border, Border>().ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-
-
-            });
-
-            return mappingConfig;
+        public static List<Country> ToCountryEntities(this IEnumerable<CountryContract> contracts)
+        {
+            return contracts.Select(c => c.ToCountryEntity()).ToList();
         }
     }
-
 }
