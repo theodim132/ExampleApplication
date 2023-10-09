@@ -1,11 +1,11 @@
 using AutoMapper;
-using ExampleApplication.Data;
-using ExampleApplication.Models;
-using ExampleApplication.Models.Dto;
-using ExampleApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using MyApp.DataAccess.Abstractions.CacheService;
+using MyApp.DataAccess.Abstractions.Dto;
+using MyApp.DataAccess.Databases.MyDomain;
+using MyApp.Domain.MyDomain.Services.Abstractions;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -16,14 +16,12 @@ namespace ExampleApplication.Controllers
     public class CountryController : ControllerBase
     {
         private readonly ICountryService _countryService;
-        private readonly AppDbContext _appDbContext;
         private readonly ICacheService _cache;
         private readonly ResponseDto _response;
 
-        public CountryController(ICountryService countryService,AppDbContext appDbContext, ICacheService memoryCache,IMapper mapper)
+        public CountryController(ICountryService countryService, ICacheService memoryCache,IMapper mapper)
         {
             _countryService = countryService;
-            _appDbContext = appDbContext;
             _cache = memoryCache;
              _response = new ResponseDto();
         }
@@ -35,7 +33,7 @@ namespace ExampleApplication.Controllers
             try
             {
                 //get cached countries if any
-                var cachedCountries = _cache.Get<List<CountryDto>>("Countries");
+                var cachedCountries = _cache.Get<List<MyApp.Domain.MyDomain.Dto.CountryDto>>("Countries");
                 if (cachedCountries?.Count() > 0)
                 {
                     _response.Result = cachedCountries;
@@ -47,7 +45,7 @@ namespace ExampleApplication.Controllers
                 ResponseDto responseFromDb = await _countryService.GetAllCountriesFromDbAsync();
                 if (responseFromDb.IsSuccess == true) 
                 {
-                    if (responseFromDb.Result is List<CountryDto> countriesFromDb)
+                    if (responseFromDb.Result is List<MyApp.Domain.MyDomain.Dto.CountryDto> countriesFromDb)
                     {
                         _response.Result = countriesFromDb;
                         _response.Message = "Countries from db";
@@ -64,7 +62,7 @@ namespace ExampleApplication.Controllers
                     }
                 }
 
-                List<CountryDto> countries = new();
+                List<MyApp.Domain.MyDomain.Dto.CountryDto> countries = new();
                 //get countries from the API
                 ResponseDto? response = await _countryService.GetAllCountriesAsync();
                 if (response is not null && response.IsSuccess)
@@ -74,13 +72,13 @@ namespace ExampleApplication.Controllers
                         string jsonResult = response.Result.ToString();
                         if (jsonResult is not null)
                         {
-                            countries = JsonConvert.DeserializeObject<List<CountryDto>>(jsonResult);
+                            countries = JsonConvert.DeserializeObject<List<MyApp.Domain.MyDomain.Dto.CountryDto>>(jsonResult);
                             _response.Result = countries;
                             _response.Message = "Results from CountriesApi";
                             _response.IsSuccess = true;
                         }
                         
-                       if (countries is not null) _countryService.PostCountries(countries);
+                       if (countries is not null) await _countryService.PostCountries(countries);
                     }
                 }
             }

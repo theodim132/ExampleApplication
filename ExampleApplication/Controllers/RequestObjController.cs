@@ -1,7 +1,7 @@
-﻿using ExampleApplication.Models;
-using ExampleApplication.Models.Dto;
-using ExampleApplication.Utility;
+﻿using ExampleApplication.Utility;
 using Microsoft.AspNetCore.Mvc;
+using MyApp.DataAccess.Abstractions.Dto;
+using MyApp.Domain.MyDomain.Model;
 
 namespace ExampleApplication.Controllers
 {
