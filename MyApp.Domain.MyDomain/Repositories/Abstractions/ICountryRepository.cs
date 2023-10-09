@@ -6,8 +6,6 @@ namespace MyApp.Domain.MyDomain.Repositories.Abstractions
 {
     public interface ICountryRepository
     {
-        Task Delete(int? id);
-        Task<ResponseDto> DeleteAllAsync();
         Task<List<CountryContract>> GetCountriesFromDbAsync();
         Task<bool> PostCountries(List<CountryContract> countries);
     }
