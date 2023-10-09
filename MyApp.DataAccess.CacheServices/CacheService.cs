@@ -20,6 +20,7 @@ namespace MyApp.DataAccess.CacheServices
             {
                 return cachedItem;
             }
+            Console.WriteLine($"Get cache with key: {key}, found: {cachedItem != null}");
             return default;
         }
 
@@ -31,6 +32,7 @@ namespace MyApp.DataAccess.CacheServices
             };
 
             _memoryCache.Set(key, item, cacheOptions);
+            Console.WriteLine($"Set cache with key: {key}");
         }
     }
 }

@@ -6,13 +6,16 @@ namespace Example.App
 {
     public static class CountryApiInstaller
     {
-        private const string SectionPath = "Services.CountryApi";
+        private const string SectionPath = "CountryApi";
 
         public static IServiceCollection AddCountryApiService(this IServiceCollection services, IConfiguration configuration)
-            => services.AddOptions<CountryApiConfiguration>().Bind(configuration.GetSection(SectionPath), options =>
-            {
-                options.BindNonPublicProperties = true;
-            })
+        {
+            var result = services
+                .AddOptions<CountryApiConfiguration>()
+                .Bind(configuration.GetSection(SectionPath), options =>
+                {
+                    options.BindNonPublicProperties = true;
+                })
             .Services
             .AddTransient(sp => sp.GetRequiredService<IOptionsMonitor<CountryApiConfiguration>>().CurrentValue)
             .AddHttpClient<ICountryApiService, CountryApiService>((sp, c) =>
@@ -21,5 +24,8 @@ namespace Example.App
                 c.BaseAddress = configuration.BaseUri;
             })
             .Services;
+
+            return result;
+        }
     }
 }

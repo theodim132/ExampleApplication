@@ -26,11 +26,11 @@ namespace ExampleApplication.Controllers
                 {
                     _response.Message = "array was empty";
                 }
-                else 
+                else
                 {
-                        var secondLargestNumber = Helper.FindSecondLargest(request.RequestArrayObj);
-                        _response.Result = secondLargestNumber;
-                        _response.IsSuccess = true;
+                    var secondLargestNumber = Helper.FindSecondLargest(request.RequestArrayObj);
+                    _response.Result = secondLargestNumber;
+                    _response.IsSuccess = true;
                 };
             }
             catch (Exception ex)

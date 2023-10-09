@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MyApp.Constants\MyApp.Constants.csproj" />
+    <PackageReference Include="Viva.Core" Version="3.4.3" />
   </ItemGroup>
 
 </Project>

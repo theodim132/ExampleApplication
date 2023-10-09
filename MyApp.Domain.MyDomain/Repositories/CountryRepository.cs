@@ -2,6 +2,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.DataAccess.Abstractions.MyDomain.Entities;
 using MyApp.DataAccess.Databases.MyDomain;
 using MyApp.Domain.MyDomain.Dto;
@@ -55,53 +56,47 @@ namespace MyApp.Domain.MyDomain.Repositories
             return _responseDto;
         }
 
-        public async Task<List<Model.Country>> GetAll()
+        public async Task<List<CountryContract>> GetCountriesFromDbAsync()
         {
-            IQueryable<Model.Country> queryableCountries = context
-                .Set<Country>()
-                .Include(u => u.Borders)
-                .ProjectTo<Model.Country>(_mapper.ConfigurationProvider);
+            var countries = await context.Countries.ToListAsync();
+            var countryContracts = await context.Countries
+                 .Select(c => new CountryContract
+                 {
+                     Name = new CountryContract.CountryName
+                     {
+                         Common = c.CommonName,
+                         Official = c.OfficialName,
+                         NativeName = c.NativeNameSpaCommon == null && c.NativeNameSpaOfficial == null ? null : new CountryContract.NativeName
+                         {
+                             Spa = new CountryContract.NativeName.NativeNameSpa
+                             {
+                                 Common = c.NativeNameSpaCommon,
+                                 Official = c.NativeNameSpaOfficial
+                             }
+                         }
+                     },
+                     Capital = c.Capital == null ? null : new List<string> { c.Capital },
+                     Borders = c.Borders.Select(b => b.Name).ToList()
+                 })
+                 .ToListAsync();
 
-            var countries = await queryableCountries.ToListAsync();
-            return countries;
+            return countryContracts;
         }
 
-        public async Task<ResponseDto> PostCountries(List<CountryDto> countries)
+        public async Task<bool> PostCountries(List<CountryContract> countries)
         {
-            try
+            var countriesToPost = countries.Select(c => new Country
             {
-                var countryEntities = countries.Select(dto => new Country
-                {
-                    Name = dto.Name.Common,
-                    Capital = dto.Capital.FirstOrDefault(),
-                }).ToList();
-
-                await context.Countries.AddRangeAsync(countryEntities);
-                await context.SaveChangesAsync();
-
-
-                for (int i = 0; i < countryEntities.Count; i++)
-                {
-                    var country = countryEntities[i];
-                    var countryDto = countries[i];
-                    var borders = countryDto?.Borders.Select(border => new Border
-                    {
-                        Name = border,
-                        CountryId = country.Id
-                    }).ToList();
-
-                    if (borders?.Any() is not null) await context.Set<Border>().AddRangeAsync(borders);
-
-                }
-                await context.SaveChangesAsync();
-                _responseDto.IsSuccess = true;
-                _responseDto.Message = "Countries Saved";
-            }
-            catch (Exception ex)
-            {
-                _responseDto.Message = ex.Message;
-            }
-            return _responseDto;
+                CommonName = c.Name.Common,
+                OfficialName = c.Name.Official,
+                NativeNameSpaCommon = c.Name.NativeName?.Spa?.Common,
+                NativeNameSpaOfficial = c.Name.NativeName?.Spa?.Official,
+                Capital = c.Capital.FirstOrDefault(),
+                Borders = c.Borders.Select(b => new Border { Name = b }).ToList()
+            }).ToList();
+            await context.Countries.AddRangeAsync(countriesToPost);
+            await context.SaveChangesAsync();
+            return true;
         }
     }
 }

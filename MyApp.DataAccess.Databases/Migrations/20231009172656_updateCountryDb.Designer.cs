@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.DataAccess.Databases.MyDomain;
 
@@ -10,9 +11,11 @@ using MyApp.DataAccess.Databases.MyDomain;
 namespace MyApp.DataAccess.Databases.Migrations
 {
     [DbContext(typeof(MyDomainDbContext))]
-    partial class MyDomainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231009172656_updateCountryDb")]
+    partial class updateCountryDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +62,11 @@ namespace MyApp.DataAccess.Databases.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NativeNameSpaCommon")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NativeNameSpaOfficial")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OfficialName")

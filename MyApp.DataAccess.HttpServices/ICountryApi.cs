@@ -4,7 +4,7 @@ namespace MyApp.DataAccess.HttpServices
 {
     public interface ICountryApi
     {
-        [Get("/independent")]
+        [Get("/independent?status=true")]
         Task<HttpResponseMessage> GetCountries([Query(",", "fields")] List<string> fields);
     }
 }

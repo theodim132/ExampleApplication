@@ -2,6 +2,7 @@
 {
     public class CountryApiConfiguration
     {
-        public Uri BaseUri { get; }
+        public Uri BaseUri { get; private set; }
     }
 }
+

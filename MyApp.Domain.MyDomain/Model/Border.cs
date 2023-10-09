@@ -9,7 +9,7 @@ namespace MyApp.Domain.MyDomain.Model
 
         public string? Name { get; set; }
 
-        public int CountryId {  get; set; }
+        public int CountryId { get; set; }
 
         [ForeignKey("CountryId")]
         [JsonIgnore]

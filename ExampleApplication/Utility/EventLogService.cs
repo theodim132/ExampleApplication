@@ -22,7 +22,7 @@ namespace Example.App.Utility
         {
             public void Dispose()
             {
-                
+
             }
         }
     }

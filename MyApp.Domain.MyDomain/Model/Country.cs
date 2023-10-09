@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MyApp.Domain.MyDomain.Model
 {
@@ -16,10 +14,10 @@ namespace MyApp.Domain.MyDomain.Model
 
     }
 
-    public class Name 
+    public class Name
     {
         public int id { get; set; }
-        public string common {  get; set; }
+        public string common { get; set; }
     }
-   
+
 }
