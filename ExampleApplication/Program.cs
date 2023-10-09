@@ -23,10 +23,6 @@ builder.Services.AddDbContext<MyDomainDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-IMapper mapper = CountryMapperProfile.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 builder.Services.AddCountryApiService(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();

@@ -13,41 +13,15 @@ namespace MyApp.Domain.MyDomain.Services
     public class CountryService : ICountryService
     {
         private readonly ICountryApiService countryApi;
-        private readonly IMapper _mapper;
         private readonly ICountryRepository _countryRepo;
         private readonly ICacheService _cacheService;
 
-
-        public CountryService(ICountryApiService httpService, IMapper mapper, ICountryRepository countryRepository, ICacheService cacheService)
+        public CountryService(ICountryApiService httpService, ICountryRepository countryRepository, ICacheService cacheService)
         {
             countryApi = httpService;
-            _mapper = mapper;
             _countryRepo = countryRepository;
             _cacheService = cacheService;
         }
-
-        public async Task<ResponseDto> DeleteCountriesAsync()
-        {
-            try
-            {
-                var result = await _countryRepo.DeleteAllAsync();
-                if (result.IsSuccess)
-                {
-                    _cacheService.Delete<Country>("Countries");
-                    return new ResponseDto { Message = "Countries Deleted", IsSuccess = true };
-                }
-                else
-                {
-                    return new ResponseDto { Message = result.Message, IsSuccess = false };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto { Message = "An error occurred while deleting countries.", IsSuccess = false };
-            }
-        }
-
-
         public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync()
         {
             try
@@ -84,35 +58,5 @@ namespace MyApp.Domain.MyDomain.Services
                 return null;
             }
         }
-
-        public async Task<ResponseDto> GetAllCountriesFromDbAsync()
-        {
-            return null;
-            //try
-            //{
-            //    var query = await _countryRepo.GetAll();
-            //    var countriesFromDb = _mapper.Map<List<MyApp.Domain.MyDomain.Dto.CountryDto>>(query);
-            //    if (query.Any())
-            //    {
-            //        _responseDto.Result = countriesFromDb;
-            //        _responseDto.Message = "Countries From db";
-            //        TimeSpan timeSpan = TimeSpan.FromSeconds(1);
-            //        _cacheService.SetItem<List<Country>>("Countries", query, timeSpan);
-            //    }
-            //    else
-            //    {
-            //        _responseDto.IsSuccess = false;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _responseDto.Message += ex.Message;
-            //    _responseDto.IsSuccess = false;
-            //}
-            //return _responseDto;
-        }
-
-
-
     }
 }
