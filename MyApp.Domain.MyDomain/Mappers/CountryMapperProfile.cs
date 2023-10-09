@@ -22,18 +22,18 @@ namespace MyApp.Domain.MyDomain.Mappers
                     .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital.FirstOrDefault()));
 
                 config.CreateMap<MyApp.DataAccess.Abstractions.MyDomain.Entities.Country, Model.Country>()
-           .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-           .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital))
-           .ForMember(dest => dest.Borders, opt => opt.MapFrom(src => src.Borders));
+                    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                    .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital))
+                    .ForMember(dest => dest.Borders, opt => opt.MapFrom(src => src.Borders.FirstOrDefault().Name));
 
                 config.CreateMap<MyApp.Domain.MyDomain.Model.Name, Model.Name>()
                     .ForMember(dest => dest.common, opt => opt.MapFrom(src => src.common));
 
 
                 config.CreateMap<Model.Country, MyApp.DataAccess.Abstractions.MyDomain.Entities.Country>()
-          .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-          .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital))
-          .ForMember(dest => dest.Borders, opt => opt.MapFrom(src => src.Borders));
+                    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                    .ForMember(dest => dest.Capital, opt => opt.MapFrom(src => src.Capital))
+                    .ForMember(dest => dest.Borders, opt => opt.MapFrom(src => src.Borders.FirstOrDefault().Name));
 
                 config.CreateMap<Model.Name, MyApp.DataAccess.Abstractions.MyDomain.Entities.Name>()
                     .ForMember(dest => dest.common, opt => opt.MapFrom(src => src.common));
