@@ -6,7 +6,7 @@ namespace Example.App
 {
     public static class CountryApiInstaller
     {
-        private const string SectionPath = "CountryApi";
+        private const string SectionPath = "Services:CountryApi";
 
         public static IServiceCollection AddCountryApiService(this IServiceCollection services, IConfiguration configuration)
         {
