@@ -24,12 +24,11 @@ namespace MyApp.Domain.MyDomain.Repositories
             var countries = await context.Countries.Include(c=>c.Borders).ToListAsync();
             return countries.ToCountryContracts();
         }
-        public async Task<bool> PostCountries(List<CountryContract> countries)
+        public async Task PostCountries(List<CountryContract> countries)
         {
             var countriesToPost = countries.ToCountryEntities();
             await context.Countries.AddRangeAsync(countriesToPost);
             await context.SaveChangesAsync();
-            return true;
         }
     }
 }
