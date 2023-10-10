@@ -1,11 +1,9 @@
-using AutoMapper;
 using Example.App;
 using Example.App.Utility;
 using Microsoft.EntityFrameworkCore;
 using MyApp.DataAccess.Abstractions.CacheService;
 using MyApp.DataAccess.CacheServices;
 using MyApp.DataAccess.Databases.MyDomain;
-using MyApp.Domain.MyDomain.Mappers;
 using MyApp.Domain.MyDomain.Repositories;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services;

@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using MyApp.DataAccess.Abstractions.CacheService;
+﻿using MyApp.DataAccess.Abstractions.CacheService;
 using MyApp.DataAccess.Abstractions.CountryApi;
-using MyApp.DataAccess.Abstractions.Dto;
-using MyApp.DataAccess.Abstractions.MyDomain.Entities;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
-using System.Collections.Generic;
 using Viva;
 
 namespace MyApp.Domain.MyDomain.Services
@@ -13,21 +9,21 @@ namespace MyApp.Domain.MyDomain.Services
     public class CountryService : ICountryService
     {
         private readonly ICountryApiService countryApi;
-        private readonly ICountryRepository _countryRepo;
-        private readonly ICacheService _cacheService;
+        private readonly ICountryRepository countryRepo;
+        private readonly ICacheService cache;
 
         public CountryService(ICountryApiService httpService, ICountryRepository countryRepository, ICacheService cacheService)
         {
             countryApi = httpService;
-            _countryRepo = countryRepository;
-            _cacheService = cacheService;
+            countryRepo = countryRepository;
+            cache = cacheService;
         }
         public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync()
         {
             try
             {
                 // Get Countries from cache
-                var cachedCountries = _cacheService.Get<List<CountryContract>>("Countries");
+                var cachedCountries = cache.Get<List<CountryContract>>("Countries");
                 if (cachedCountries?.Count() > 0)
                 {
                     return Result<List<CountryContract>>.CreateSuccessful(cachedCountries);
@@ -35,10 +31,10 @@ namespace MyApp.Domain.MyDomain.Services
                 // Get Countries From DB
                 // Store in Cache
                 // return
-                var countriesFromDb = await _countryRepo.GetCountriesFromDbAsync();
+                var countriesFromDb = await countryRepo.GetCountriesFromDbAsync();
                 if (countriesFromDb.Any())
                 {
-                    _cacheService.SetItem("Countries", countriesFromDb, TimeSpan.FromSeconds(10));
+                    cache.SetItem("Countries", countriesFromDb, TimeSpan.FromSeconds(10));
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb);
                 }
                 // Get Countries from API
@@ -50,7 +46,7 @@ namespace MyApp.Domain.MyDomain.Services
                     "capital",
                     "borders"
                 });
-                await _countryRepo.PostCountries(countriesFromApi.Data);
+                await countryRepo.PostCountries(countriesFromApi.Data);
                 return countriesFromApi;
             }
             catch (Exception ex)

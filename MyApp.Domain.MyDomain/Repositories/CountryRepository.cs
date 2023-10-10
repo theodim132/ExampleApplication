@@ -21,7 +21,7 @@ namespace MyApp.Domain.MyDomain.Repositories
         }
         public async Task<List<CountryContract>> GetCountriesFromDbAsync()
         {
-            var countries = await context.Countries.ToListAsync();
+            var countries = await context.Countries.Include(c=>c.Borders).ToListAsync();
             return countries.ToCountryContracts();
         }
         public async Task<bool> PostCountries(List<CountryContract> countries)
