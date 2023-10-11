@@ -9,25 +9,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{29FB4AC3-BE9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Infrastructure", "0. Infrastructure", "{22367413-B6F9-477C-B0D7-66F730BE270A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Constants", "MyApp.Constants\MyApp.Constants.csproj", "{DCB4BAD9-6D57-479E-B17F-BAAE33E67E76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Constants", "MyApp.Constants\MyApp.Constants.csproj", "{DCB4BAD9-6D57-479E-B17F-BAAE33E67E76}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Data Access", "1. Data Access", "{634DFE33-08D8-44E7-A1E9-4C78B2027C78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.DataAccess.Abstractions", "MyApp.DataAccess.Abstractions\MyApp.DataAccess.Abstractions.csproj", "{08C1B717-F0A6-4A2C-8159-7C2E345A0C00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.DataAccess.Abstractions", "MyApp.DataAccess.Abstractions\MyApp.DataAccess.Abstractions.csproj", "{08C1B717-F0A6-4A2C-8159-7C2E345A0C00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.DataAccess.Databases", "MyApp.DataAccess.Databases\MyApp.DataAccess.Databases.csproj", "{FA3EA2B9-4AC3-490D-8527-8EE581DA7A2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.DataAccess.Databases", "MyApp.DataAccess.Databases\MyApp.DataAccess.Databases.csproj", "{FA3EA2B9-4AC3-490D-8527-8EE581DA7A2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.DataAccess.HttpServices", "MyApp.DataAccess.HttpServices\MyApp.DataAccess.HttpServices.csproj", "{EBE60DF7-93E1-41A3-9638-53F2D0956143}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.DataAccess.HttpServices", "MyApp.DataAccess.HttpServices\MyApp.DataAccess.HttpServices.csproj", "{EBE60DF7-93E1-41A3-9638-53F2D0956143}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Domain", "2. Domain", "{85732927-D2A4-4306-9472-8135EA57577F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Domain.Abstractions", "MyApp.Domain.Abstractions\MyApp.Domain.Abstractions.csproj", "{09CE350F-B01C-4DA1-A6D5-3926A595C46E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Domain.Abstractions", "MyApp.Domain.Abstractions\MyApp.Domain.Abstractions.csproj", "{09CE350F-B01C-4DA1-A6D5-3926A595C46E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Domain.MyDomain", "MyApp.Domain.MyDomain\MyApp.Domain.MyDomain.csproj", "{F41A6811-49AA-4A2E-B7BD-F8C7DFB316DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Domain.MyDomain", "MyApp.Domain.MyDomain\MyApp.Domain.MyDomain.csproj", "{F41A6811-49AA-4A2E-B7BD-F8C7DFB316DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Application", "3. Application", "{893DB8B3-0310-425A-B94E-7647809CCE5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.DataAccess.CacheServices", "MyApp.DataAccess.CacheServices\MyApp.DataAccess.CacheServices.csproj", "{B7C69AC0-7EFE-4F0C-92BC-51C1AC21EC7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.DataAccess.CacheServices", "MyApp.DataAccess.CacheServices\MyApp.DataAccess.CacheServices.csproj", "{B7C69AC0-7EFE-4F0C-92BC-51C1AC21EC7C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CA4B96E1-B4FC-439C-858B-7F7186A0CB0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Tests.Base", "MyApp.Tests.Base\MyApp.Tests.Base.csproj", "{C10C814B-D953-4D33-A143-0687E2548F57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +71,10 @@ Global
 		{B7C69AC0-7EFE-4F0C-92BC-51C1AC21EC7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7C69AC0-7EFE-4F0C-92BC-51C1AC21EC7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7C69AC0-7EFE-4F0C-92BC-51C1AC21EC7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10C814B-D953-4D33-A143-0687E2548F57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10C814B-D953-4D33-A143-0687E2548F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10C814B-D953-4D33-A143-0687E2548F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10C814B-D953-4D33-A143-0687E2548F57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +92,8 @@ Global
 		{F41A6811-49AA-4A2E-B7BD-F8C7DFB316DD} = {85732927-D2A4-4306-9472-8135EA57577F}
 		{893DB8B3-0310-425A-B94E-7647809CCE5F} = {29FB4AC3-BE95-4DC1-A653-853CF83B8818}
 		{B7C69AC0-7EFE-4F0C-92BC-51C1AC21EC7C} = {634DFE33-08D8-44E7-A1E9-4C78B2027C78}
+		{CA4B96E1-B4FC-439C-858B-7F7186A0CB0E} = {29FB4AC3-BE95-4DC1-A653-853CF83B8818}
+		{C10C814B-D953-4D33-A143-0687E2548F57} = {CA4B96E1-B4FC-439C-858B-7F7186A0CB0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {582A713A-87F1-420D-A15C-6A3D07F77170}
