@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.Extensions.Caching.Memory;
 using MyApp.DataAccess.Abstractions.CacheService;
+using MyApp.DataAccess.Abstractions.CountryApi;
+using Viva;
 
 namespace MyApp.DataAccess.CacheServices
 {
@@ -14,13 +16,20 @@ namespace MyApp.DataAccess.CacheServices
         public void Delete<T>(string key) =>
             _memoryCache.Remove(key);
 
-        public T? Get<T>(string key)
+        public IResult<T?> Get<T>(string key)
         {
-            if (_memoryCache.TryGetValue(key, out T? cachedItem))
+            try
             {
-                return cachedItem;
+                if (_memoryCache.TryGetValue(key, out T? cachedItem))
+                {
+                    return Result<T?>.CreateSuccessful(cachedItem);
+                }
+                return Result<T?>.CreateFailed(ResultCode.NotFound,"Not found in cache");
             }
-            return default;
+            catch (Exception ex) 
+            {
+                return Result<T?>.CreateFailed(ResultCode.InternalServerError,"Cache Error");
+            }
         }
 
         public void SetItem<T>(string key, T item, TimeSpan? expiration = null)

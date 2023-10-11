@@ -25,24 +25,28 @@ namespace MyApp.Domain.MyDomain.Services
             {
                 // Get Countries from cache
                 //return
-                var countries = GetCountriesFromCacheAsync(CacheKeys.Countries);
-                if (countries is not null)
+                var countriesFromCache = GetCountriesFromCacheAsync(CacheKeys.Countries);
+                if (countriesFromCache.Success)
                 {
-                    return Result<List<CountryContract>>.CreateSuccessful(countries);
+                    if (countriesFromCache.Data is not null)
+                        return Result<List<CountryContract>>.CreateSuccessful(countriesFromCache.Data);
                 }
                 // Get Countries From DB
                 // Store in Cache
                 // return
-                countries = await GetCountriesFromDbAsync();
-                if (countries is not null)
+                var countriesFromDb = await GetCountriesFromDbAsync();
+                if (countriesFromDb is not null)
                 {
-                    return Result<List<CountryContract>>.CreateSuccessful(countries);
+                    return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb);
                 }
                 // Get Countries from API
                 // Store In Db
                 // return
-                countries = await GetCountriesFromApiAsync();
-                return Result<List<CountryContract>>.CreateSuccessful(countries);
+                var countriesFromApi = await GetCountriesFromApiAsync();
+                if (countriesFromApi is not null)
+                    return Result<List<CountryContract>>.CreateSuccessful(countriesFromApi.Data);
+
+                return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, "Countries not found from api");
             }
             catch (Exception ex)
             {
@@ -50,7 +54,7 @@ namespace MyApp.Domain.MyDomain.Services
             }
         }
 
-        private List<CountryContract>? GetCountriesFromCacheAsync(string key)
+        private IResult<List<CountryContract>?> GetCountriesFromCacheAsync(string key)
         {
             return cache.Get<List<CountryContract>?>(key);
         }
@@ -66,12 +70,13 @@ namespace MyApp.Domain.MyDomain.Services
             return null;
         }
 
-        private async Task<List<CountryContract>> GetCountriesFromApiAsync()
+        private async Task<IResult<List<CountryContract>>?> GetCountriesFromApiAsync()
         {
             var countriesFromApi = await countryApi.GetCountriesAsync(ApiFields.Default);
-            //call another method for post?
+
+            //check if the repo stored the data????
             await countryRepo.PostCountries(countriesFromApi.Data);
-            return countriesFromApi.Data;
+            return countriesFromApi;
         }
     }
 }
