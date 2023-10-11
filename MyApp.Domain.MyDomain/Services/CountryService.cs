@@ -33,17 +33,17 @@ namespace MyApp.Domain.MyDomain.Services
                 // Store in Cache
                 // return
                 var countriesFromDb = await GetCountriesFromDbAsync();
-                if (countriesFromDb is not null)
+                if (countriesFromDb.Any())
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb);
 
                 // Get Countries from API
                 // Store In Db
                 // return
                 var countriesFromApi = await GetCountriesFromApiAsync();
-                if (countriesFromApi.Success)
-                    return Result<List<CountryContract>>.CreateSuccessful(countriesFromApi.Data);
+                if (!countriesFromApi.Success)
+                    return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, countriesFromApi.ErrorText);
 
-                return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, "Countries not found from api");
+                return Result<List<CountryContract>>.CreateSuccessful(countriesFromApi.Data);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,7 @@ namespace MyApp.Domain.MyDomain.Services
             return cache.Get<List<CountryContract>?>(key);
         }
 
-        private async Task<List<CountryContract>?> GetCountriesFromDbAsync()
+        private async Task<List<CountryContract>> GetCountriesFromDbAsync()
         {
             var countriesFromDb = await countryRepo.GetCountriesFromDbAsync();
             if (countriesFromDb.Any())
@@ -64,14 +64,20 @@ namespace MyApp.Domain.MyDomain.Services
                 cache.SetItem(CacheKeys.Countries, countriesFromDb, TimeSpan.FromSeconds(10));
                 return countriesFromDb;
             }
-            return null;
+
+            return new List<CountryContract>();
         }
 
         private async Task<IResult<List<CountryContract>>> GetCountriesFromApiAsync()
         {
             var countriesFromApi = await countryApi.GetCountriesAsync(ApiFields.Default);
+            if(!countriesFromApi.Success)
+            {
+                return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, "Could not get countries");
+            }
             //check if the repo stored the data????
             await countryRepo.PostCountries(countriesFromApi.Data);
+
             return countriesFromApi;
         }
     }
