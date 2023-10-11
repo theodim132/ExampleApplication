@@ -16,7 +16,7 @@ namespace MyApp.DataAccess.CacheServices
 
         public T? Get<T>(string key)
         {
-            if (_memoryCache.TryGetValue(key, out T cachedItem))
+            if (_memoryCache.TryGetValue(key, out T? cachedItem))
             {
                 return cachedItem;
             }
