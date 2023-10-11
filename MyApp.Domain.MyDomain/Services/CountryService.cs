@@ -26,24 +26,21 @@ namespace MyApp.Domain.MyDomain.Services
                 // Get Countries from cache
                 //return
                 var countriesFromCache = GetCountriesFromCacheAsync(CacheKeys.Countries);
-                if (countriesFromCache.Success)
-                {
-                    if (countriesFromCache.Data is not null)
-                        return Result<List<CountryContract>>.CreateSuccessful(countriesFromCache.Data);
-                }
+                if (countriesFromCache.Success && countriesFromCache.Data is not null)
+                    return Result<List<CountryContract>>.CreateSuccessful(countriesFromCache.Data);
+
                 // Get Countries From DB
                 // Store in Cache
                 // return
                 var countriesFromDb = await GetCountriesFromDbAsync();
                 if (countriesFromDb is not null)
-                {
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb);
-                }
+
                 // Get Countries from API
                 // Store In Db
                 // return
                 var countriesFromApi = await GetCountriesFromApiAsync();
-                if (countriesFromApi is not null)
+                if (countriesFromApi.Success)
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromApi.Data);
 
                 return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, "Countries not found from api");
@@ -70,10 +67,9 @@ namespace MyApp.Domain.MyDomain.Services
             return null;
         }
 
-        private async Task<IResult<List<CountryContract>>?> GetCountriesFromApiAsync()
+        private async Task<IResult<List<CountryContract>>> GetCountriesFromApiAsync()
         {
             var countriesFromApi = await countryApi.GetCountriesAsync(ApiFields.Default);
-
             //check if the repo stored the data????
             await countryRepo.PostCountries(countriesFromApi.Data);
             return countriesFromApi;
