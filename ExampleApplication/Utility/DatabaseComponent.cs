@@ -4,7 +4,7 @@ using MyApp.DataAccess.Databases.MyDomain;
 
 namespace Example.App.Utility
 {
-    public static class DatabaseConfiguration
+    public static class DatabaseComponent
     {
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration) 

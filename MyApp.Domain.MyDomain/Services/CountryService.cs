@@ -23,7 +23,7 @@ namespace MyApp.Domain.MyDomain.Services
             try
             {
                 // Get Countries from cache
-                var cachedCountries = cache.Get<List<CountryContract>>("Countries");
+                var cachedCountries = cache.Get<List<CountryContract>?>("Countries");
                 if (cachedCountries?.Count() > 0)
                 {
                     return Result<List<CountryContract>>.CreateSuccessful(cachedCountries);

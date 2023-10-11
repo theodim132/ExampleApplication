@@ -10,7 +10,7 @@ using Viva.Enterprise.Extensions.Serialization;
 
 namespace Example.App.Utility
 {
-    public static class ServicesConfiguration
+    public static class ServicesComponent
     {
         public static IServiceCollection AddAppServices(this IServiceCollection services) 
         {
