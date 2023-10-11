@@ -25,8 +25,8 @@ namespace MyApp.Domain.MyDomain.Services
             {
                 // Get Countries from cache
                 //return
-                var countries = await GetCountriesFromCacheAsync(CacheKeys.Countries);
-                if (countries != null)
+                var countries = GetCountriesFromCacheAsync(CacheKeys.Countries);
+                if (countries is not null)
                 {
                     return Result<List<CountryContract>>.CreateSuccessful(countries);
                 }
@@ -34,7 +34,7 @@ namespace MyApp.Domain.MyDomain.Services
                 // Store in Cache
                 // return
                 countries = await GetCountriesFromDbAsync();
-                if (countries != null)
+                if (countries is not null)
                 {
                     return Result<List<CountryContract>>.CreateSuccessful(countries);
                 }
@@ -46,13 +46,13 @@ namespace MyApp.Domain.MyDomain.Services
             }
             catch (Exception ex)
             {
-                return null;
+                return Result<List<CountryContract>>.CreateFailed(ResultCode.InternalServerError, "Error");
             }
         }
 
-        private async Task<List<CountryContract>?> GetCountriesFromCacheAsync(string key)
+        private List<CountryContract>? GetCountriesFromCacheAsync(string key)
         {
-            return await Task.FromResult(cache.Get<List<CountryContract>?>(key));
+            return cache.Get<List<CountryContract>?>(key);
         }
 
         private async Task<List<CountryContract>?> GetCountriesFromDbAsync()
