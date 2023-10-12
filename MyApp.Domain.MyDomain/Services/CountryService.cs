@@ -1,9 +1,11 @@
-﻿using MyApp.Constants.MyDomain;
+﻿using Microsoft.Extensions.Logging;
+using MyApp.Constants.MyDomain;
 using MyApp.DataAccess.Abstractions.CacheService;
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
 using Viva;
+using Viva.Diagnostics;
 
 namespace MyApp.Domain.MyDomain.Services
 {
@@ -12,42 +14,43 @@ namespace MyApp.Domain.MyDomain.Services
         private readonly ICountryApiService countryApi;
         private readonly ICountryRepository countryRepo;
         private readonly ICacheService cache;
+        private readonly ILogger logger;
 
-        public CountryService(ICountryApiService httpService, ICountryRepository countryRepository, ICacheService cacheService)
+        public CountryService(ICountryApiService countryApi, ICountryRepository countryRepo, ICacheService cache, ILogger<CountryService> logger)
         {
-            countryApi = httpService;
-            countryRepo = countryRepository;
-            cache = cacheService;
+            this.countryApi = countryApi;
+            this.countryRepo = countryRepo;
+            this.cache = cache;
+            this.logger = logger;
         }
+
         public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync()
         {
             try
             {
-                // Get Countries from cache
-                //return
+                logger.LogInformation("CountryService.GetAllCountriesAsync called",
+                    DateTime.UtcNow.ToLongTimeString());
+
                 var countriesFromCache = GetCountriesFromCacheAsync(CacheKeys.Countries);
                 if (countriesFromCache.Success && countriesFromCache.Data is not null)
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromCache.Data);
 
-                // Get Countries From DB
-                // Store in Cache
-                // return
                 var countriesFromDb = await GetCountriesFromDbAsync();
                 if (countriesFromDb.Any())
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb);
 
-                // Get Countries from API
-                // Store In Db
-                // return
                 var countriesFromApi = await GetCountriesFromApiAsync();
                 if (!countriesFromApi.Success)
+                {
                     return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, countriesFromApi.ErrorText);
+                }
 
                 return Result<List<CountryContract>>.CreateSuccessful(countriesFromApi.Data);
             }
             catch (Exception ex)
             {
-                return Result<List<CountryContract>>.CreateFailed(ResultCode.InternalServerError, "Error");
+                logger.LogError("Error occured in GetAllCountriesAsync", ex);
+                return Result<List<CountryContract>>.CreateFailed(ResultCode.InternalServerError, ex.Message);
             }
         }
 
@@ -59,7 +62,7 @@ namespace MyApp.Domain.MyDomain.Services
         private async Task<List<CountryContract>> GetCountriesFromDbAsync()
         {
             var countriesFromDb = await countryRepo.GetCountriesFromDbAsync();
-            if (countriesFromDb.Any())
+            if (countriesFromDb is not null && countriesFromDb.Any())
             {
                 cache.SetItem(CacheKeys.Countries, countriesFromDb, TimeSpan.FromSeconds(10));
                 return countriesFromDb;
@@ -71,11 +74,10 @@ namespace MyApp.Domain.MyDomain.Services
         private async Task<IResult<List<CountryContract>>> GetCountriesFromApiAsync()
         {
             var countriesFromApi = await countryApi.GetCountriesAsync(ApiFields.Default);
-            if(!countriesFromApi.Success)
+            if (!countriesFromApi.Success)
             {
                 return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, "Could not get countries");
             }
-            //check if the repo stored the data????
             await countryRepo.PostCountries(countriesFromApi.Data);
 
             return countriesFromApi;

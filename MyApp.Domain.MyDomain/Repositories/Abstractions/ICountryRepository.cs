@@ -6,7 +6,7 @@ namespace MyApp.Domain.MyDomain.Repositories.Abstractions
 {
     public interface ICountryRepository
     {
-        Task<List<CountryContract>> GetCountriesFromDbAsync();
+        Task<List<CountryContract>?> GetCountriesFromDbAsync();
         Task PostCountries(List<CountryContract> countries);
     }
 }

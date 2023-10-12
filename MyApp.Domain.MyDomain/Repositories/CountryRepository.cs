@@ -20,7 +20,7 @@ namespace MyApp.Domain.MyDomain.Repositories
         {
             context = appDbContext;
         }
-        public async Task<List<CountryContract>> GetCountriesFromDbAsync()
+        public async Task<List<CountryContract>?> GetCountriesFromDbAsync()
         {
             var countries = await context.Countries
                 .Include(c=>c.Borders)
