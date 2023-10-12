@@ -1,9 +1,9 @@
-﻿namespace Example.App.Utility
+﻿namespace Example.App.Utility.Components
 {
     public static class ApiServiceComponent
     {
 
-        public static IServiceCollection AddApiServices(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCountryApiService(configuration);
             services.AddHttpContextAccessor();

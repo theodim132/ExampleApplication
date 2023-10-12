@@ -1,6 +1,6 @@
-﻿namespace Example.App.Utility
+﻿namespace Example.App.Utility.Components
 {
-    public static  class MiddleWareComponent
+    public static class MiddleWareComponent
     {
         public static WebApplication UseDevelopmentConfiguration(this WebApplication app)
         {

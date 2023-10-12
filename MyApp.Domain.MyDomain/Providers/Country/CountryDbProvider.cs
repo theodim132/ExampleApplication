@@ -1,5 +1,5 @@
 ﻿using MyApp.DataAccess.Abstractions.CountryApi;
-using MyApp.Domain.MyDomain.Providers.Abstractions;
+using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyApp.Domain.MyDomain.Providers
+namespace MyApp.Domain.MyDomain.Providers.Country
 {
     public class CountryDbProvider : ICountryDbProvider
     {

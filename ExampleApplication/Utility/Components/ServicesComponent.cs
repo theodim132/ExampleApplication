@@ -8,11 +8,11 @@ using Viva.Diagnostics;
 using Viva.Enterprise.Extensions.Serialization.Json;
 using Viva.Enterprise.Extensions.Serialization;
 
-namespace Example.App.Utility
+namespace Example.App.Utility.Components
 {
     public static class ServicesComponent
     {
-        public static IServiceCollection AddAppServices(this IServiceCollection services) 
+        public static IServiceCollection AddAppServices(this IServiceCollection services)
         {
             services.AddSingleton<IEventLogService, EventLogService>()
                     .AddTransient<ICamelCaseJsonSerializationService, CamelCaseJsonSerializationService>()

@@ -1,6 +1,6 @@
 ﻿using MyApp.DataAccess.Abstractions.CacheService;
 using MyApp.DataAccess.Abstractions.CountryApi;
-using MyApp.Domain.MyDomain.Providers.Abstractions;
+using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viva;
 
-namespace MyApp.Domain.MyDomain.Providers
+namespace MyApp.Domain.MyDomain.Providers.Country
 {
     public class CountryCacheProvider : ICountryCacheProvider
     {

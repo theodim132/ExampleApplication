@@ -1,4 +1,6 @@
-﻿namespace Example.App.Utility
+﻿using Example.App.Utility.Components;
+
+namespace Example.App.Utility
 {
     public static class StartupConfiguration
     {
@@ -9,7 +11,8 @@
                 .AddApiServices(builder.Configuration)
                 .AddAppServices()
                 .AddBasicServices()
-                .AddSwaggerConfiguration();
+                .AddSwaggerConfiguration()
+                .AddProviders();
 
             var app = builder.Build();
             app.UseDevelopmentConfiguration();

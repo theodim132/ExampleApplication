@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyApp.Domain.MyDomain.Providers.Abstractions
+namespace MyApp.Domain.MyDomain.Providers.Country.Abstractions
 {
     public interface ICountryDbProvider
     {

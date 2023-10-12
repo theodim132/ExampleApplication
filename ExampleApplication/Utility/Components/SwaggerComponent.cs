@@ -1,6 +1,6 @@
-﻿namespace Example.App.Utility
+﻿namespace Example.App.Utility.Components
 {
-    public static  class SwaggerComponent
+    public static class SwaggerComponent
     {
         public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
         {

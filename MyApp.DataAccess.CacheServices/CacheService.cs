@@ -31,7 +31,7 @@ namespace MyApp.DataAccess.CacheServices
             }
         }
 
-        public void SetItem<T>(string key, T item, TimeSpan? expiration = null)
+        public void SetItem<T>(string key, T? item, TimeSpan? expiration = null)
         {
             var cacheOptions = new MemoryCacheEntryOptions
             {
