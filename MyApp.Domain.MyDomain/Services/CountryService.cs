@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MyApp.Constants.MyDomain;
-using MyApp.DataAccess.Abstractions.CacheService;
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
-using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
-using System.Diagnostics.Tracing;
 using Viva;
 
 namespace MyApp.Domain.MyDomain.Services
