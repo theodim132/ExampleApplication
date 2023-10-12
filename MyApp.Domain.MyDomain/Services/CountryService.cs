@@ -5,7 +5,6 @@ using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
 using Viva;
-using Viva.Diagnostics;
 
 namespace MyApp.Domain.MyDomain.Services
 {

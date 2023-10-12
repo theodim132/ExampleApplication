@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.Extensions.Caching.Memory;
 using MyApp.DataAccess.Abstractions.CacheService;
-using MyApp.DataAccess.Abstractions.CountryApi;
 using Viva;
 
 namespace MyApp.DataAccess.CacheServices
@@ -28,7 +27,7 @@ namespace MyApp.DataAccess.CacheServices
             }
             catch (Exception ex) 
             {
-                return Result<T?>.CreateFailed(ResultCode.InternalServerError,"Cache Error");
+                return Result<T?>.CreateFailed(ResultCode.InternalServerError,"Get Cache Error");
             }
         }
 
