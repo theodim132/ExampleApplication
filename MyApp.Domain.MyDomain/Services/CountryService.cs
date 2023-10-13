@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using MyApp.Constants.MyDomain;
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
@@ -27,23 +26,30 @@ namespace MyApp.Domain.MyDomain.Services
             try
             {
                 logger.LogInformation("CountryService.GetAllCountriesAsync called",
-                    DateTime.UtcNow.ToLongTimeString());
+                    DateTime.UtcNow);
 
-                var countriesFromCache = cacheProvider.GetCountries(CacheKeys.Countries);
+                var countriesFromCache = cacheProvider.GetCountries();
                 if (countriesFromCache.Success && countriesFromCache.Data is not null)
+                {
+                    logger.LogInformation("Returned countries from cache",
+                            DateTime.UtcNow);
                     return Result<List<CountryContract>>.CreateSuccessful(countriesFromCache.Data);
+                }
 
                 var countriesFromDb = await countryDbProvider.GetCountriesAsync();
                 if (!countriesFromDb.IsNullOrEmpty())
                 {
-                    cacheProvider.SetCountries(CacheKeys.Countries, countriesFromDb, TimeSpan.FromSeconds(10));
-                    return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb);
+                    cacheProvider.SetCountries( countriesFromDb);
+                    logger.LogInformation("Returned countries from db and returned",
+                           DateTime.UtcNow);
+                    return Result<List<CountryContract>>.CreateSuccessful(countriesFromDb!);
                 }
 
                 var countriesFromApi = await countryApiProvider.GetCountriesAsync();
                 if (!countriesFromApi.Success)
                 {
-                   
+                    logger.LogInformation("Returned countries from API",
+                           DateTime.UtcNow);
                     return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound, countriesFromApi.ErrorText);
                 }
 
@@ -51,7 +57,7 @@ namespace MyApp.Domain.MyDomain.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error occurred in GetAllCountriesAsync");
+                logger.LogError(ex, "Error occurred in CountryService.GetAllCountriesAsync");
                 return Result<List<CountryContract>>.CreateFailed(ResultCode.InternalServerError, ex.Message);
             }
         }

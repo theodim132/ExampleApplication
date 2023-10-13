@@ -25,7 +25,7 @@ namespace MyApp.Tests.Base
             mockCountryApi = new Mock<ICountryApiProvider>();
         }
         [Fact]
-        public async Task GetAllCountriesAsync_ReturnsCountriesFromCache_WhenCacheIsNotEmpty()
+        public async Task GetAllCountries_ReturnsCountriesFromCache_WhenCacheIsNotEmpty()
         {
             var countries = CreateSampleCountries();
             var resultToPass = new Result<List<CountryContract>>();
@@ -33,7 +33,7 @@ namespace MyApp.Tests.Base
 
             mockCacheService
                 .Setup(c => 
-                    c.GetCountries(CacheKeys.Countries))
+                    c.GetCountries())
                 .Returns(resultToPass);
 
             var service = CreateCountryService();
@@ -53,8 +53,9 @@ namespace MyApp.Tests.Base
 
             mockCacheService
                 .Setup(m =>
-                    m.GetCountries(CacheKeys.Countries))
+                    m.GetCountries())
                 .Returns((IResult<List<CountryContract>>)new Result<List<CountryContract>>());
+
             mockCountryRepo
                 .Setup(m => m.GetCountriesAsync())
                 .ReturnsAsync(countriesFromDb);
@@ -67,7 +68,7 @@ namespace MyApp.Tests.Base
             Assert.Equal(countriesFromDb, result.Data);
             mockCacheService
                 .Verify(m => 
-                        m.SetCountries(CacheKeys.Countries, 
+                        m.SetCountries(
                             countriesFromDb, 
                             It.IsAny<TimeSpan>()), 
                             Times.Once);

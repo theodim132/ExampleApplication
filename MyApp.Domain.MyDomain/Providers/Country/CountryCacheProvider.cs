@@ -1,11 +1,7 @@
-﻿using MyApp.DataAccess.Abstractions.CacheService;
+﻿using MyApp.Constants.MyDomain;
+using MyApp.DataAccess.Abstractions.CacheService;
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Viva;
 
 namespace MyApp.Domain.MyDomain.Providers.Country
@@ -17,14 +13,14 @@ namespace MyApp.Domain.MyDomain.Providers.Country
         public CountryCacheProvider(ICacheService cache) =>
             this.cache = cache;
 
-        public IResult<List<CountryContract>?> GetCountries(string key)
+        public IResult<List<CountryContract>?> GetCountries()
         {
-            return cache.Get<List<CountryContract>?>(key);
+            return cache.Get<List<CountryContract>?>(CacheKeys.Countries);
         }
 
-        public void SetCountries(string key, List<CountryContract>? countries, TimeSpan duration)
+        public void SetCountries( List<CountryContract>? countries)
         {
-            cache.SetItem(key, countries, duration);
+            cache.SetItem(CacheKeys.Countries, countries, TimeSpan.FromSeconds(10));
         }
     }
 }

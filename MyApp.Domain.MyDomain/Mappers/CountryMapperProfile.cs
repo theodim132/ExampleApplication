@@ -7,7 +7,11 @@ namespace MyApp.Domain.MyDomain.Mappers
     {
         public static List<CountryContract> ToCountryContracts(this List<Country> countries)
         {
-            return countries.Select(country => country.ToCountryContract()).ToList();
+            return countries
+                .Select(country => 
+                            country.ToCountryContract()
+                       )
+                .ToList();
         }
 
         public static CountryContract ToCountryContract(this Country country)
