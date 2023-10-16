@@ -7,6 +7,7 @@ using MyApp.Domain.MyDomain.Services;
 using Viva.Diagnostics;
 using Viva.Enterprise.Extensions.Serialization.Json;
 using Viva.Enterprise.Extensions.Serialization;
+using MyApp.Domain.MyDomain.Handler;
 
 namespace Example.App.Utility.Components
 {
@@ -21,6 +22,7 @@ namespace Example.App.Utility.Components
                     .AddScoped<ICountryRepository, CountryRepository>()
                     .AddMemoryCache();
             return services;
+
         }
     }
 }

@@ -12,7 +12,8 @@ namespace Example.App.Utility
                 .AddAppServices()
                 .AddBasicServices()
                 .AddSwaggerConfiguration()
-                .AddProviders();
+                .AddProviders()
+                .AddHanlders();
 
             var app = builder.Build();
             app.UseDevelopmentConfiguration();
