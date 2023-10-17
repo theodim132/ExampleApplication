@@ -8,27 +8,39 @@ using Viva;
 
 namespace ExampleApplication.Controllers
 {
-    [ApiController]
-    [Route("api/country")]
-    public class CountryController : ControllerBase
-    {
-        private readonly ICountryService _countryService;
+    //[ApiController]
+    //[Route("api/country")]
+    //public class CountryController : ControllerBase
+    //{
+    //    private readonly ICountryService _countryService;
 
-        public CountryController(ICountryService countryService)
-        {
-            _countryService = countryService;
-        }
+    //    public CountryController(ICountryService countryService)
+    //    {
+    //        _countryService = countryService;
+    //    }
 
-        [HttpGet]
-        [Route("GetAllFromAPI")]
-        public async Task<List<CountryContract>> GetAllFromAPI()
-        {
-            var response = await _countryService.GetAllCountriesAsync();
-            if (!response.Success)
-            {
-                return new List<CountryContract>();
-            }
-            return response.Data;
-        }
-    }
+    //    [HttpGet]
+    //    [Route("GetAllFromAPI")]
+    //    public async Task<List<CountryContract>> GetAllFromAPI()
+    //    {
+    //        var response = await _countryService.GetAllCountriesAsync();
+    //        if (!response.Success)
+    //        {
+    //            return new List<CountryContract>();
+    //        }
+    //        return response.Data;
+    //    }
+
+    //    [HttpGet]
+    //    [Route("GetCountryById/{id}")]
+    //    public async Task<CountryContract> GetCountryById(int id)
+    //    {
+    //        var response = await _countryService.GetCountryByIdAsync(id);
+    //        if (!response.Success)
+    //        {
+    //            return new CountryContract();
+    //        }
+    //        return response.Data;
+    //    }
+    //}
 }

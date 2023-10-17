@@ -6,26 +6,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viva;
 
 namespace MyApp.Domain.MyDomain.Providers.Country
 {
     public class CountryDbProvider : ICountryDbProvider
     {
-        private readonly ICountryRepository _countryRepo;
+        private readonly ICountryRepository countryRepo;
 
-        public CountryDbProvider(ICountryRepository countryRepo)
-        {
-            _countryRepo = countryRepo;
-        }
+        public CountryDbProvider(ICountryRepository countryRepo) =>
+            this.countryRepo = countryRepo;
 
         public async Task<List<CountryContract>?> GetCountriesAsync()
         {
-            return await _countryRepo.GetCountriesFromDbAsync();
+            return await countryRepo.GetCountriesFromDbAsync();
         }
 
-        public async Task PostCountries(List<CountryContract> countries)
+        public async  Task<IResult<CountryContract?>> GetCountryByIdAsync(int id)
         {
-            await _countryRepo.PostCountries(countries);
+            var country = await countryRepo.GetCountryByIdAsync(id);
+            if (country is null) 
+            {
+               return  Result<CountryContract>.CreateFailed(ResultCode.NotFound, "");
+            }
+            return Result<CountryContract?>.CreateSuccessful(country!);
         }
+
+        public async Task PostCountries(List<CountryContract> countries) =>
+            await countryRepo.PostCountries(countries);
     }
 }

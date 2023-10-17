@@ -1,13 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Handler.Abstractions;
+using MyApp.Domain.MyDomain.Handlers.Abstractions;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using Viva;
 
 namespace MyApp.Domain.MyDomain.Handler
 {
 
-    public class CountryDbHanlder : Handler<object> , ICountryDbHanlder
+    public class CountryDbHanlder : Handler<object> , ICountriesFromDb
     {
         private readonly ICountryDbProvider dbProvider;
         private readonly ICountryCacheProvider cacheProvider;

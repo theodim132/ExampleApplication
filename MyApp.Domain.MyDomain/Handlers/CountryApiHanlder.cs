@@ -1,11 +1,12 @@
 ﻿using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Handler.Abstractions;
+using MyApp.Domain.MyDomain.Handlers.Abstractions;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using Viva;
 
 namespace MyApp.Domain.MyDomain.Handler
 {
-    public class CountryApiHanlder : Handler<object> , ICountryApiHanlder
+    public class CountryApiHanlder : Handler<object> , ICountriesFromApi
     {
         private readonly ICountryApiProvider apiProvider;
         private readonly ICountryDbProvider countryDbProvider;

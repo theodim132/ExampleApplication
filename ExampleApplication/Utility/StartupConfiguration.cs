@@ -1,4 +1,5 @@
 ﻿using Example.App.Utility.Components;
+using Example.App.Utility.Components.Endpoints;
 
 namespace Example.App.Utility
 {
@@ -18,7 +19,7 @@ namespace Example.App.Utility
             var app = builder.Build();
             app.UseDevelopmentConfiguration();
             app.UseStandardMiddleware();
-            app.UseEndpointsConfiguration();
+            app.UseCountryEndPoints();
 
             app.Run();
         }

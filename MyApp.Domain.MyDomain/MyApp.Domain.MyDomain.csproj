@@ -9,6 +9,9 @@
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="Constants\" />
+    <Folder Include="Messages\Commands\" />
+    <Folder Include="Messages\Events\" />
+    <Folder Include="Messages\Hanlders\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,5 +10,8 @@ namespace MyApp.Domain.MyDomain.Services.Abstractions
     public interface ICountryService
     {
         Task<IResult<List<CountryContract>>> GetAllCountriesAsync();
+        Task<IResult<CountryContract>> GetCountryByIdAsync(int id);
+
+
     }
 }

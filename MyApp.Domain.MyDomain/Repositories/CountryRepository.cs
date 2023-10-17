@@ -20,9 +20,20 @@ namespace MyApp.Domain.MyDomain.Repositories
             var countries = await context
                 .Set<Country>()
                 .AsNoTracking()
-                .Include(c=>c.Borders)
+                .Include(c => c.Borders)
                 .ToListAsync();
             return countries.ToCountryContracts();
+        }
+
+        public async Task<CountryContract?> GetCountryByIdAsync(int id)
+        {
+            var country = await context
+               .Set<Country>()
+               .AsNoTracking()
+               .Include(c => c.Borders)
+               .FirstOrDefaultAsync(c => c.Id == id);
+
+            return country?.ToCountryContract();
         }
         public async Task PostCountries(List<CountryContract> countries)
         {
