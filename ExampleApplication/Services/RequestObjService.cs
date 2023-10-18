@@ -15,6 +15,11 @@ namespace Example.App.Services
             {
                 return Result<int>.CreateFailed(ResultCode.NotFound,"Array was empty or null");
             }
+
+            if(array.Count() == 1) 
+            {
+                return Result<int>.CreateFailed(ResultCode.BadRequest, "The array must have more than one integer");
+            }
             int value = await Task.FromResult(Helper.FindSecondLargest(array));
             return Result<int>.CreateSuccessful(value);
         }
