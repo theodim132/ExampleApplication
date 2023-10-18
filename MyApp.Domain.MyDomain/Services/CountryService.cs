@@ -42,10 +42,9 @@ namespace MyApp.Domain.MyDomain.Services
             getAllCountriesChain = countryCacheHanlder;
         }
 
-        public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync()
-        {
-            return await getAllCountriesChain.Handle(null);
-        }
+        public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync() =>
+            await getAllCountriesChain.Handle(null);
+        
 
         public async Task<IResult<CountryContract>> GetCountryByIdAsync(int id)
         {

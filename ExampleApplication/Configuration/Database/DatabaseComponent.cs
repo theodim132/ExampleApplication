@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyApp.DataAccess.Databases.MyDomain;
 
-namespace Example.App.Utility.Components
+namespace Example.App.Configuration.Database
 {
     public static class DatabaseComponent
     {

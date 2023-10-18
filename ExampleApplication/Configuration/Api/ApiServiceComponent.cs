@@ -1,4 +1,6 @@
-﻿namespace Example.App.Utility.Components
+﻿using Example.App.Configuration.Country;
+
+namespace Example.App.Configuration.Api
 {
     public static class ApiServiceComponent
     {

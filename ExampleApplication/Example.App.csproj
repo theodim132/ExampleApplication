@@ -18,6 +18,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Viva.Enterprise.Extensions" Version="1.3.7" />
+    <PackageReference Include="Viva.Enterprise.Extensions.Configuration" Version="1.0.1" />
+    <PackageReference Include="Viva.Enterprise.Extensions.Configuration.AspNetCore" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +28,10 @@
     <ProjectReference Include="..\MyApp.DataAccess.Databases\MyApp.DataAccess.Databases.csproj" />
     <ProjectReference Include="..\MyApp.DataAccess.HttpServices\MyApp.DataAccess.HttpServices.csproj" />
     <ProjectReference Include="..\MyApp.Domain.MyDomain\MyApp.Domain.MyDomain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configuration\RequestObj\" />
   </ItemGroup>
 
 </Project>

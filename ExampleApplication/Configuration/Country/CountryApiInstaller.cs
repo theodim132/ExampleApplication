@@ -2,7 +2,7 @@
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.DataAccess.HttpServices;
 
-namespace Example.App
+namespace Example.App.Configuration.Country
 {
     public static class CountryApiInstaller
     {

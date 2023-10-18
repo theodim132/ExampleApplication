@@ -1,4 +1,4 @@
-﻿namespace Example.App
+﻿namespace Example.App.Configuration.Country
 {
     public class CountryApiConfiguration
     {

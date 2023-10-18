@@ -1,7 +1,11 @@
-﻿using Example.App.Utility.Components;
-using Example.App.Utility.Components.Endpoints;
+﻿using Example.App.Configuration.Api;
+using Example.App.Configuration.Cache;
+using Example.App.Configuration.Country;
+using Example.App.Configuration.Database;
+using Example.App.Configuration.Mvc;
+using Example.App.Configuration.Swagger;
 
-namespace Example.App.Utility
+namespace Example.App.Configuration
 {
     public static class StartupConfiguration
     {
@@ -10,16 +14,16 @@ namespace Example.App.Utility
             services
                 .AddDatabase(builder.Configuration)
                 .AddApiServices(builder.Configuration)
+                .AddSwaggerServices()
+                .AddCountryComponents()
                 .AddAppServices()
-                .AddBasicServices()
-                .AddSwaggerConfiguration()
-                .AddProviders()
-                .AddHanlders();
+                .AddCache();
 
             var app = builder.Build();
-            app.UseDevelopmentConfiguration();
             app.UseStandardMiddleware();
+            app.UseSwaggerMiddleware();
             app.UseCountryEndPoints();
+            app.UserRequestObjEndPoints();
 
             app.Run();
         }
