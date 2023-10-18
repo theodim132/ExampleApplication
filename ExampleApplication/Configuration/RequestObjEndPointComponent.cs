@@ -14,7 +14,9 @@ namespace Example.App.Configuration
             return app;
         }
 
-        private static async Task<IResult<int>> HanldeFindSecondLargest(IRequestObjService service,[FromBody] RequestObj request) =>
+        private static async Task<IResult<int>> HanldeFindSecondLargest(
+            IRequestObjService service,
+            [FromBody] RequestObj request) =>
              await service.FindSecondLargestAsync(request.RequestArrayObj);
     }
 }
