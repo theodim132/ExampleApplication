@@ -6,6 +6,7 @@
         {
             services.AddCountryServices()
                     .AddCountryProviders()
+                    .AddCountryFactories()
                     .AddCountryHanlders();
             return services;
         }

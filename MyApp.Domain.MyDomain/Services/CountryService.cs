@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MyApp.DataAccess.Abstractions.CountryApi;
+using MyApp.Domain.MyDomain.Factory.Abstractions;
 using MyApp.Domain.MyDomain.Handler.Abstractions;
 using MyApp.Domain.MyDomain.Handlers.Abstractions;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
@@ -11,35 +12,19 @@ namespace MyApp.Domain.MyDomain.Services
     public class CountryService : ICountryService
     {
         private readonly ICountryHandler<object> getAllCountriesChain;
-        private readonly ICountriesFromCache countryCacheHanlder;
-        private readonly ICountriesFromApi countryApiHanlder;
-        private readonly ICountriesFromDb countryDbHanlder;
         private readonly ICountryDbProvider countryDbProvider;
-        private readonly ICountryApiProvider countryApiProvider;
-        private readonly ICountryCacheProvider countryCacheProvider;
         private readonly ILogger<CountryService> _logger;
 
-        public CountryService(
-            ICountriesFromApi countryApiHanlder,
-            ICountriesFromCache countryCacheHanlder,
-            ICountriesFromDb countryDbHanlder,
-            ICountryDbProvider countryDbProvider,
-            ICountryApiProvider countryApiProvider,
-            ICountryCacheProvider countryCacheProvider,
+        public CountryService(ICountryDbProvider countryDbProvider,
+            ICountryApiHandler countryApiHandler,
+            ICountryCacheHandler countryCacheHandler,
+            ICountryDbHandler countryDbHandler,
+            ICountryHandlerFactory handlerFactory,
             ILogger<CountryService> logger)
         {
             _logger = logger;
-            this.countryCacheHanlder = countryCacheHanlder;
-            this.countryApiHanlder = countryApiHanlder;
-            this.countryDbHanlder = countryDbHanlder;
-
             this.countryDbProvider = countryDbProvider;
-            this.countryApiProvider = countryApiProvider;
-            this.countryCacheProvider = countryCacheProvider;
-
-            countryCacheHanlder.SetNext(countryDbHanlder).SetNext(countryApiHanlder);
-
-            getAllCountriesChain = countryCacheHanlder;
+            getAllCountriesChain = handlerFactory.CreateChain(countryCacheHandler, countryDbHandler, countryApiHandler);
         }
 
         public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync() =>
@@ -56,7 +41,7 @@ namespace MyApp.Domain.MyDomain.Services
                     return Result<CountryContract>.CreateFailed(ResultCode.NotFound, result.ErrorText);
                 }
 
-                if (result.Data is  null) 
+                if (result.Data is null) 
                 {
                     return Result<CountryContract>.CreateFailed(ResultCode.NotFound, result.ErrorText);
                 }

@@ -12,6 +12,8 @@ using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using MyApp.Domain.MyDomain.Providers.Country;
 using MyApp.Domain.MyDomain.Handler;
 using MyApp.Domain.MyDomain.Handlers.Abstractions;
+using MyApp.Domain.MyDomain.Factory;
+using MyApp.Domain.MyDomain.Factory.Abstractions;
 
 namespace Example.App.Configuration.Country
 {
@@ -33,10 +35,17 @@ namespace Example.App.Configuration.Country
         }
         public static IServiceCollection AddCountryHanlders(this IServiceCollection services)
         {
-            services.AddScoped<ICountriesFromCache, CountryCacheHanlder>()
-                    .AddScoped<ICountriesFromDb, CountryDbHanlder>()
-                    .AddScoped<ICountriesFromApi, CountryApiHanlder>();
+            services.AddScoped<ICountryCacheHandler, CountryCacheHandler>()
+                    .AddScoped<ICountryDbHandler, CountryDbHanlder>()
+                    .AddScoped<ICountryApiHandler, CountryApiHandler>();
             return services;
+        }
+
+
+        public static IServiceCollection AddCountryFactories(this IServiceCollection services) 
+        {
+            services.AddScoped<ICountryHandlerFactory, CountryHandlerFactory>();
+            return services;    
         }
     }
 }

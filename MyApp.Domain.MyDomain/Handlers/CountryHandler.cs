@@ -19,13 +19,14 @@ namespace MyApp.Domain.MyDomain.Handler
         {
             if (NextHandler != null)
                 return await NextHandler.Handle(request);
-            return null;
+            return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound,"");
         }
 
         public ICountryHandler<TRequest> SetNext(ICountryHandler<TRequest> handler)
         {
+            Console.WriteLine($"Setting next for {this.GetType().Name} to {handler.GetType().Name}");
             NextHandler = handler;
-            return handler;
+            return NextHandler;
         }
     }
 

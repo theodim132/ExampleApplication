@@ -8,7 +8,7 @@ using Viva;
 namespace MyApp.Domain.MyDomain.Handler
 {
 
-    public class CountryDbHanlder : Handler<object> , ICountriesFromDb
+    public class CountryDbHanlder : Handler<object> , ICountryDbHandler
     {
         private readonly ICountryDbProvider dbProvider;
         private readonly ICountryCacheProvider cacheProvider;

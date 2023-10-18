@@ -6,12 +6,12 @@ using Viva;
 
 namespace MyApp.Domain.MyDomain.Handler
 {
-    public class CountryApiHanlder : Handler<object> , ICountriesFromApi
+    public class CountryApiHandler : Handler<object> , ICountryApiHandler
     {
         private readonly ICountryApiProvider apiProvider;
         private readonly ICountryDbProvider countryDbProvider;
 
-        public CountryApiHanlder(ICountryApiProvider apiProvider, ICountryDbProvider countryDbProvider)
+        public CountryApiHandler(ICountryApiProvider apiProvider, ICountryDbProvider countryDbProvider)
         {
             this.apiProvider = apiProvider;
             this.countryDbProvider = countryDbProvider;

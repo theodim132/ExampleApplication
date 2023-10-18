@@ -6,11 +6,11 @@ using Viva;
 
 namespace MyApp.Domain.MyDomain.Handler
 {
-    public class CountryCacheHanlder : Handler<object> , ICountriesFromCache
+    public class CountryCacheHandler : Handler<object> , ICountryCacheHandler
     {
         private readonly ICountryCacheProvider cacheProvider;
 
-        public CountryCacheHanlder(ICountryCacheProvider cacheProvider) =>
+        public CountryCacheHandler(ICountryCacheProvider cacheProvider) =>
             this.cacheProvider = cacheProvider;
 
         public override async Task<IResult<List<CountryContract>>> Handle(object request)
