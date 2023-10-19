@@ -6,7 +6,7 @@ using Viva;
 
 namespace MyApp.Domain.MyDomain.Handler
 {
-    public class CountryApiHandler : Handler , ICountryApiHandler
+    public class CountryApiHandler : Handler
     {
         private readonly ICountryApiProvider apiProvider;
         private readonly ICountryDbProvider countryDbProvider;
@@ -16,7 +16,7 @@ namespace MyApp.Domain.MyDomain.Handler
             this.apiProvider = apiProvider;
             this.countryDbProvider = countryDbProvider;
         }
-        public override async Task<IResult<List<CountryContract>>> Handle()
+        public override async Task<IResult<List<CountryContract>>> HandleAsync()
         {
             var result = await apiProvider.GetCountriesAsync();
             if (result.Success)
@@ -25,7 +25,7 @@ namespace MyApp.Domain.MyDomain.Handler
                 return result;
             }
 
-            return await base.Handle();
+            return await base.HandleAsync();
         }
     }
 }

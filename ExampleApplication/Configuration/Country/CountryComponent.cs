@@ -1,19 +1,13 @@
-﻿using Example.App.Utility;
-using MyApp.DataAccess.Abstractions.CacheService;
-using MyApp.DataAccess.CacheServices;
-using MyApp.Domain.MyDomain.Repositories.Abstractions;
+﻿using MyApp.Domain.MyDomain.Repositories.Abstractions;
 using MyApp.Domain.MyDomain.Repositories;
 using MyApp.Domain.MyDomain.Services.Abstractions;
 using MyApp.Domain.MyDomain.Services;
-using Viva.Diagnostics;
-using Viva.Enterprise.Extensions.Serialization.Json;
-using Viva.Enterprise.Extensions.Serialization;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using MyApp.Domain.MyDomain.Providers.Country;
 using MyApp.Domain.MyDomain.Handler;
-using MyApp.Domain.MyDomain.Handlers.Abstractions;
 using MyApp.Domain.MyDomain.Factory;
 using MyApp.Domain.MyDomain.Factory.Abstractions;
+using MyApp.Domain.MyDomain.Handler.Abstractions;
 
 namespace Example.App.Configuration.Country
 {
@@ -35,9 +29,9 @@ namespace Example.App.Configuration.Country
         }
         public static IServiceCollection AddCountryHanlders(this IServiceCollection services)
         {
-            services.AddScoped<ICountryCacheHandler, CountryCacheHandler>()
-                    .AddScoped<ICountryDbHandler, CountryDbHanlder>()
-                    .AddScoped<ICountryApiHandler, CountryApiHandler>();
+            services.AddScoped<ICountryHandler, CountryCacheHandler>()
+                    .AddScoped<ICountryHandler, CountryDbHanlder>()
+                    .AddScoped<ICountryHandler, CountryApiHandler>();
             return services;
         }
 

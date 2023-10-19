@@ -6,6 +6,6 @@ namespace MyApp.Domain.MyDomain.Handler.Abstractions
     public interface ICountryHandler
     {
         ICountryHandler SetNext(ICountryHandler handler);
-        Task<IResult<List<CountryContract>>> Handle();
+        Task<IResult<List<CountryContract>>> HandleAsync();
     }
 }

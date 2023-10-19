@@ -2,7 +2,6 @@
 using MyApp.DataAccess.Abstractions.CountryApi;
 using MyApp.Domain.MyDomain.Factory.Abstractions;
 using MyApp.Domain.MyDomain.Handler.Abstractions;
-using MyApp.Domain.MyDomain.Handlers.Abstractions;
 using MyApp.Domain.MyDomain.Providers.Country.Abstractions;
 using MyApp.Domain.MyDomain.Services.Abstractions;
 using Viva;
@@ -11,24 +10,21 @@ namespace MyApp.Domain.MyDomain.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly Lazy<ICountryHandler>  getAllCountriesChain;
+        private readonly ICountryHandler  getAllCountriesChain;
         private readonly ICountryDbProvider countryDbProvider;
         private readonly ILogger<CountryService> _logger;
 
         public CountryService(ICountryDbProvider countryDbProvider,
-            ICountryApiHandler countryApiHandler,
-            ICountryCacheHandler countryCacheHandler,
-            ICountryDbHandler countryDbHandler,
             ICountryHandlerFactory handlerFactory,
             ILogger<CountryService> logger)
         {
             _logger = logger;
             this.countryDbProvider = countryDbProvider;
-            getAllCountriesChain = new Lazy<ICountryHandler>(() => handlerFactory.CreateChain(countryCacheHandler, countryDbHandler, countryApiHandler));
+            getAllCountriesChain = handlerFactory.CreateChain();
         }
 
         public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync() =>
-            await getAllCountriesChain.Value.Handle();
+            await getAllCountriesChain.HandleAsync();
         
 
         public async Task<IResult<CountryContract>> GetCountryByIdAsync(int id)
