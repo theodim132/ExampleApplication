@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Domain.MyDomain.Handlers.Abstractions
 {
-    public interface ICountryCacheHandler : ICountryHandler<object>
+    public interface ICountryCacheHandler : ICountryHandler
     {
     }
 }

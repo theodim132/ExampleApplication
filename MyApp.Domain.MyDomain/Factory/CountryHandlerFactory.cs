@@ -11,7 +11,7 @@ namespace MyApp.Domain.MyDomain.Factory
 {
     public class CountryHandlerFactory : ICountryHandlerFactory
     {
-        public ICountryHandler<object> CreateChain(
+        public ICountryHandler CreateChain(
              ICountryCacheHandler cacheHandler,
              ICountryDbHandler dbHandler,
              ICountryApiHandler apiHandler)

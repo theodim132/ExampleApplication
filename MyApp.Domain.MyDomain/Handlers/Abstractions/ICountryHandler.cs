@@ -3,9 +3,9 @@ using Viva;
 
 namespace MyApp.Domain.MyDomain.Handler.Abstractions
 {
-    public interface ICountryHandler<TRequest>
+    public interface ICountryHandler
     {
-        ICountryHandler<TRequest> SetNext(ICountryHandler<TRequest> handler);
-        Task<IResult<List<CountryContract>>> Handle(TRequest request);
+        ICountryHandler SetNext(ICountryHandler handler);
+        Task<IResult<List<CountryContract>>> Handle();
     }
 }

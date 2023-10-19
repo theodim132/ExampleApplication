@@ -8,7 +8,7 @@ using Viva;
 namespace MyApp.Domain.MyDomain.Handler
 {
 
-    public class CountryDbHanlder : Handler<object> , ICountryDbHandler
+    public class CountryDbHanlder : Handler , ICountryDbHandler
     {
         private readonly ICountryDbProvider dbProvider;
         private readonly ICountryCacheProvider cacheProvider;
@@ -19,7 +19,7 @@ namespace MyApp.Domain.MyDomain.Handler
             this.cacheProvider = cacheProvider;
         }
 
-        public override async Task<IResult<List<CountryContract>>> Handle(object request)
+        public override async Task<IResult<List<CountryContract>>> Handle()
         {
             var result = await dbProvider.GetCountriesAsync();
             if (!result.IsNullOrEmpty())
@@ -28,7 +28,7 @@ namespace MyApp.Domain.MyDomain.Handler
                 return Result<List<CountryContract>>.CreateSuccessful(result!);
             }
 
-            return await base.Handle(request);
+            return await base.Handle();
         }
 
     }

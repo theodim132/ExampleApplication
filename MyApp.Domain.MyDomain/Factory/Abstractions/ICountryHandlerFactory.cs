@@ -11,7 +11,7 @@ namespace MyApp.Domain.MyDomain.Factory.Abstractions
 {
     public interface ICountryHandlerFactory
     {
-        ICountryHandler<object> CreateChain(
+        ICountryHandler CreateChain(
              ICountryCacheHandler cacheHandler,
              ICountryDbHandler dbHandler,
              ICountryApiHandler apiHandler);

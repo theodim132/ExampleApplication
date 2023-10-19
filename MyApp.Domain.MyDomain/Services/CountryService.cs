@@ -11,7 +11,7 @@ namespace MyApp.Domain.MyDomain.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly ICountryHandler<object> getAllCountriesChain;
+        private readonly Lazy<ICountryHandler>  getAllCountriesChain;
         private readonly ICountryDbProvider countryDbProvider;
         private readonly ILogger<CountryService> _logger;
 
@@ -24,11 +24,11 @@ namespace MyApp.Domain.MyDomain.Services
         {
             _logger = logger;
             this.countryDbProvider = countryDbProvider;
-            getAllCountriesChain = handlerFactory.CreateChain(countryCacheHandler, countryDbHandler, countryApiHandler);
+            getAllCountriesChain = new Lazy<ICountryHandler>(() => handlerFactory.CreateChain(countryCacheHandler, countryDbHandler, countryApiHandler));
         }
 
         public async Task<IResult<List<CountryContract>>> GetAllCountriesAsync() =>
-            await getAllCountriesChain.Handle(null);
+            await getAllCountriesChain.Value.Handle();
         
 
         public async Task<IResult<CountryContract>> GetCountryByIdAsync(int id)

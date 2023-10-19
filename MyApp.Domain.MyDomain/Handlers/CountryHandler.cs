@@ -11,18 +11,18 @@ namespace MyApp.Domain.MyDomain.Handler
 {
    
 
-    public abstract class Handler<TRequest> : ICountryHandler<TRequest>
+    public abstract class Handler : ICountryHandler
     {
-        protected ICountryHandler<TRequest> NextHandler { get; private set; }
+        protected ICountryHandler NextHandler { get; private set; }
 
-        public virtual async Task<IResult<List<CountryContract>>> Handle(TRequest request)
+        public virtual async Task<IResult<List<CountryContract>>> Handle()
         {
             if (NextHandler != null)
-                return await NextHandler.Handle(request);
+                return await NextHandler.Handle();
             return Result<List<CountryContract>>.CreateFailed(ResultCode.NotFound,"");
         }
 
-        public ICountryHandler<TRequest> SetNext(ICountryHandler<TRequest> handler)
+        public ICountryHandler SetNext(ICountryHandler handler)
         {
             Console.WriteLine($"Setting next for {this.GetType().Name} to {handler.GetType().Name}");
             NextHandler = handler;
